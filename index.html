@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Генератор Номеров</title>
+    <title>Генератор номеров РФ</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-color: #121214;
+            --card-bg: #1a1a1e;
+            --accent-color: #3b82f6;
+            --text-color: #f4f4f5;
         }
 
         * {
@@ -21,7 +19,7 @@
             margin: 0;
             padding: 0;
             -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
@@ -33,234 +31,289 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom));
-            overflow: hidden;
         }
 
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             background: var(--card-bg);
-            padding: 30px;
+            padding: 25px;
             border-radius: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         h1 {
-            font-size: 24px;
-            margin-bottom: 25px;
+            font-size: 22px;
+            margin-bottom: 20px;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
 
-        .inputs-group {
+        /* Стиль оригинального автономера РФ */
+        .plate-container {
+            background: #000;
+            padding: 6px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .plate {
+            background: #ffffff;
+            color: #000000;
+            border-radius: 6px;
             display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 10px;
+            height: 80px;
+            border: 2px solid #000;
+            position: relative;
+            font-weight: 700;
+            user-select: none;
         }
 
-        .input-field {
-            flex: 1;
+        .plate-main {
+            font-size: 45px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            font-family: monospace, sans-serif;
+        }
+
+        .plate-main span {
+            display: inline-block;
+        }
+
+        .plate-main .letter {
+            font-size: 32px;
+            margin-top: 5px;
+        }
+
+        .plate-right {
+            border-left: 2px solid #000;
+            height: 100%;
+            width: 85px;
             display: flex;
             flex-direction: column;
-            text-align: left;
-        }
-
-        .input-field label {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .input-field input {
-            background: rgba(15, 23, 42, 0.6);
-            border: 2px solid transparent;
-            border-radius: 12px;
-            padding: 12px;
-            color: #fff;
-            font-size: 16px;
-            font-weight: 600;
-            text-align: center;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .input-field input:focus {
-            border-color: var(--accent-color);
-        }
-
-        .result-box {
-            height: 140px;
-            display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(15, 23, 42, 0.4);
-            border-radius: 16px;
-            margin-bottom: 25px;
-            overflow: hidden;
             position: relative;
+            padding-left: 5px;
         }
 
-        .number {
-            font-size: 64px;
+        .region-code {
+            font-size: 32px;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .country {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
             font-weight: 800;
-            color: var(--accent-color);
-            text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-            transition: transform 0.1s ease;
         }
 
-        .rolling {
-            animation: pulse 0.1s infinite alternate;
+        .flag {
+            width: 16px;
+            height: 10px;
+            display: flex;
+            flex-direction: column;
+            border: 0.5px solid #ccc;
+        }
+        .flag-white { background: #fff; flex: 1; }
+        .flag-blue { background: #0033aa; flex: 1; }
+        .flag-red { background: #dd0000; flex: 1; }
+
+        /* Настройки режимов */
+        .modes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.7; }
-            100% { transform: scale(1.05); opacity: 1; }
+        .mode-btn {
+            background: #27272a;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #a1a1aa;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .mode-btn.active {
+            background: var(--accent-color);
+            color: #fff;
+            border-color: var(--accent-color);
         }
 
         .btn {
             width: 100%;
-            background: var(--accent-color);
-            color: #0f172a;
+            background: #ffffff;
+            color: #000000;
             border: none;
             padding: 16px;
             border-radius: 14px;
             font-size: 18px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+            transition: transform 0.1s;
         }
 
         .btn:active {
-            transform: scale(0.98);
-            background: var(--accent-hover);
+            transform: scale(0.97);
         }
 
         .history {
             margin-top: 20px;
             text-align: left;
-            max-height: 80px;
-            overflow-y: auto;
-            padding-right: 5px;
         }
 
         .history-title {
             font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
+            color: #71717a;
+            margin-bottom: 8px;
             text-transform: uppercase;
         }
 
-        .history-tags {
+        .history-list {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 120px;
+            overflow-y: auto;
         }
 
-        .tag {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 10px;
+        .history-item {
+            background: rgba(255,255,255,0.03);
+            padding: 8px 12px;
             border-radius: 8px;
             font-size: 14px;
-            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .rolling {
+            animation: shake 0.05s infinite alternate;
+        }
+        @keyframes shake {
+            0% { transform: translateY(-1px); }
+            100% { transform: translateY(1px); }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🎲 Генератор Чисел</h1>
+        <h1>🚗 Госномер РФ</h1>
         
-        <div class="inputs-group">
-            <div class="input-field">
-                <label for="min">От</label>
-                <input type="number" id="min" value="1" pattern="\d*">
-            </div>
-            <div class="input-field">
-                <label for="max">До</label>
-                <input type="number" id="max" value="100" pattern="\d*">
+        <div class="plate-container">
+            <div class="plate" id="plate">
+                <div class="plate-main">
+                    <span class="letter" id="l1">А</span>
+                    <span id="n1">7</span>
+                    <span id="n2">7</span>
+                    <span id="n3">7</span>
+                    <span class="letter" id="l2">А</span>
+                    <span class="letter" id="l3">А</span>
+                </div>
+                <div class="plate-right">
+                    <div class="region-code" id="region">777</div>
+                    <div class="country">
+                        <span>RUS</span>
+                        <div class="flag">
+                            <div class="flag-white"></div>
+                            <div class="flag-blue"></div>
+                            <div class="flag-red"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="result-box">
-            <div id="number" class="number">?</div>
+        <div class="modes">
+            <button class="mode-btn active" onclick="setMode('all')">🎲 Все подряд</button>
+            <button class="mode-btn" onclick="setMode('triple')">💎 Три одинаковых</button>
+            <button class="mode-btn" onclick="setMode('ooo')">🔥 Буквы ААА/ООО</button>
+            <button class="mode-btn" onclick="setMode('777')">🎰 Только 777</button>
         </div>
 
-        <button class="btn" id="generateBtn">СГЕНЕРИРОВАТЬ</button>
+        <button class="btn" id="genBtn" onclick="generatePlate()">КРУТИТЬ НОМЕР</button>
 
         <div class="history">
-            <div class="history-title">История:</div>
-            <div class="history-tags" id="historyTags"></div>
+            <div class="history-title">История выбитых:</div>
+            <div class="history-list" id="historyList"></div>
         </div>
     </div>
 
     <script>
-        const minInput = document.getElementById('min');
-        const maxInput = document.getElementById('max');
-        const generateBtn = document.getElementById('generateBtn');
-        const numberDisplay = document.getElementById('number');
-        const historyTags = document.getElementById('historyTags');
-        let history = [];
+        // Разрешенные буквы в номерах РФ
+        const letters = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
+        // Популярные регионы РФ
+        const regions = ['77', '99', '177', '777', '799', '78', '98', '178', '198', '50', '90', '150', '750', '23', '93', '123', '16', '116', '716', '54', '154'];
+        
+        let currentMode = 'all';
+        const history = [];
 
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
         }
 
-        function generate() {
-            const min = parseInt(minInput.value) || 0;
-            const max = parseInt(maxInput.value) || 100;
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
 
-            if (min >= max) {
-                alert('Значение "От" должно быть меньше "До"');
-                return;
+        function getFakeNumber() {
+            let l1 = getRandom(letters);
+            let l2 = getRandom(letters);
+            let l3 = getRandom(letters);
+            let n1 = Math.floor(Math.random() * 10);
+            let n2 = Math.floor(Math.random() * 10);
+            let n3 = Math.floor(Math.random() * 10);
+            let reg = getRandom(regions);
+
+            // Обработка режимов
+            if (currentMode === 'triple') {
+                let num = Math.floor(Math.random() * 10);
+                n1 = num; n2 = num; n3 = num;
+            } else if (currentMode === 'ooo') {
+                let letChoice = getRandom(['А', 'О', 'В', 'М', 'Е']);
+                l1 = letChoice; l2 = letChoice; l3 = letChoice;
+            } else if (currentMode === '777') {
+                n1 = 7; n2 = 7; n3 = 7;
+                reg = getRandom(['77', '777', '799']);
             }
 
-            // Тактильная отдача для iPhone (если запущено как PWA)
-            if (navigator.vibrate) {
-                navigator.vibrate(15);
-            }
+            return { l1, n1, n2, n3, l2, l3, reg };
+        }
 
-            generateBtn.disabled = true;
-            numberDisplay.classList.add('rolling');
+        function generatePlate() {
+            const btn = document.getElementById('genBtn');
+            const plate = document.getElementById('plate');
+            btn.disabled = true;
+            plate.classList.add('rolling');
 
-            // Эффект крутящегося барабана (анимация)
-            let counter = 0;
+            let ticks = 0;
             const interval = setInterval(() => {
-                numberDisplay.innerText = getRandomInt(min, max);
-                counter++;
-                if (counter > 10) {
-                    clearInterval(interval);
-                    
-                    const finalNumber = getRandomInt(min, max);
-                    numberDisplay.innerText = finalNumber;
-                    numberDisplay.classList.remove('rolling');
-                    generateBtn.disabled = false;
-
-                    // Добавляем в историю
-                    updateHistory(finalNumber);
-                }
-            }, 50);
-        }
-
-        function updateHistory(num) {
-            history.unshift(num);
-            if (history.length > 5) history.pop();
-
-            historyTags.innerHTML = '';
-            history.forEach(item => {
-                const tag = document.createElement('span');
-                tag.className = 'tag';
-                tag.innerText = item;
-                historyTags.appendChild(tag);
-            });
-        }
-
-        generateBtn.addEventListener('click', generate);
-    </script>
-</body>
-</html>
+                let res = getFakeNumber();
+                document.getElementById('l1').innerText = res.l1;
+                document.getElementById('n1').innerText = res.n1;
+                document.getElementById('n2').innerText = res.n2;
+                document.getElementById('n3').innerText = res.n3;
+                document.getElementById('l2').innerText = res.l2;
+                document.getElementById('l3').innerText = res.l3;
+                document.getElementById('region').innerText = res.reg;
+                
+                ticks++;
+                if (ticks > 15) {
