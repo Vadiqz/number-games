@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Генератор Номеров 3.1.0</title>
+    <title>Генератор Номеров копия</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
 
         body {
-            background-color: #121212;
+            background-color: #0c0c0c;
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -26,270 +26,239 @@
             min-height: 100vh;
             padding: 16px;
             padding-top: calc(12px + env(safe-area-inset-top));
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            padding-bottom: calc(16px + env(safe-area-inset-bottom));
         }
 
-        .app-container {
+        .wrapper {
             width: 100%;
-            max-width: 390px;
+            max-width: 375px;
             display: flex;
             flex-direction: column;
-            position: relative;
             height: 100%;
         }
 
-        /* Верхнее меню и баланс */
-        .header-menu {
+        /* Оригинальный топ-бар */
+        .top-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            padding: 5px 0 15px 0;
+            padding: 8px 4px 14px 4px;
         }
 
-        .menu-icon {
+        .burger-btn {
+            color: #8e8e93;
             font-size: 24px;
             cursor: pointer;
         }
 
-        .wallet-container {
+        .currencies {
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-
-        .balance {
-            font-size: 16px;
-            color: #b3b3b3;
+            font-size: 14px;
+            color: #8e8e93;
             font-weight: 500;
         }
 
-        .diamonds {
-            font-size: 16px;
-            color: #b3b3b3;
+        .cur-diamonds {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
 
-        /* Верхний баннер рекорда один в один */
-        .record-box {
-            background: #251c0c;
-            border: 1.5px solid #d4af37;
-            border-radius: 10px;
-            padding: 12px 14px;
+        /* Идеальный баннер рекорда */
+        .record-banner-box {
+            background: #19140a;
+            border: 1px solid #4a3b1a;
+            border-radius: 12px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 35px;
             width: 100%;
+            margin-bottom: 55px;
         }
 
-        .record-info {
+        .record-inner-text {
             font-size: 13px;
-            color: #ebdcb9;
+            color: #cbb88a;
             line-height: 1.4;
+            font-weight: 400;
         }
 
-        .record-info strong {
-            color: #ffffff;
-        }
-
-        .record-link {
-            color: #d4af37;
+        .record-link-arrow {
+            color: #e5b842;
             font-size: 13px;
-            font-weight: bold;
+            font-weight: 600;
             text-decoration: none;
         }
 
-        /* Статус редкости */
-        .rarity-section {
+        /* Блок редкости и цены на одной линии */
+        .rarity-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .rarity-badge-block {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            width: 100%;
-            padding-left: 4px;
+        }
+
+        .rarity-text-label {
+            font-size: 12px;
+            font-weight: 700;
             margin-bottom: 4px;
         }
 
-        .rarity-title {
-            font-size: 14px;
-            color: #b48aef; /* Фиолетовый по умолчанию */
-            font-weight: bold;
-            margin-bottom: 2px;
-        }
-
-        .rarity-dots {
+        .rarity-lines-grid {
             display: flex;
             gap: 3px;
         }
 
-        .dot {
-            width: 8px;
+        .rarity-dash-item {
+            width: 14px;
             height: 3px;
-            background: #b48aef;
             border-radius: 1px;
         }
 
-        /* Цена крупно */
-        .price-display {
-            font-size: 26px;
-            font-weight: bold;
-            color: #ca8a04;
-            text-align: right;
-            width: 100%;
-            margin-bottom: 12px;
-            padding-right: 4px;
+        .big-price-label {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e5b842;
         }
-
-        /* Оригинальный автомобильный номер знака */
-        .plate-frame {
-            background: #1e1e1e;
-            padding: 5px;
+        /* Идеальный госномер автомобиля один в один */
+        .car-plate-border {
+            background: #1c1c1e;
+            padding: 3px;
             border-radius: 6px;
-            border: 1px solid #2a2a2a;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 28px;
+            cursor: pointer;
         }
 
-        .plate-inner {
+        .car-plate-white {
             background: #ffffff;
             color: #000000;
             border-radius: 4px;
-            height: 78px;
+            height: 72px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 18px;
+            padding: 0 14px;
             border: 3px solid #000000;
         }
 
-        .plate-left-side {
-            font-size: 52px;
+        .digits-letters-left {
+            font-size: 54px;
             display: flex;
             align-items: center;
             gap: 2px;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             font-weight: 900;
         }
 
-        .plate-left-side .font-fix {
-            font-size: 34px;
+        .digits-letters-left .ios-font-fix {
+            font-size: 36px;
             margin-top: 14px;
             font-family: -apple-system, sans-serif;
         }
 
-        .plate-right-side {
+        .region-section-right {
             border-left: 3px solid #000;
             height: 100%;
-            width: 78px;
+            width: 74px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding-left: 6px;
+            padding-left: 4px;
         }
 
-        .reg-code {
+        .reg-number-bold {
             font-size: 34px;
             line-height: 1;
-            font-weight: 800;
-            font-family: monospace;
+            font-weight: 900;
+            font-family: 'Courier New', monospace;
         }
 
-        .rus-label {
+        .rus-flag-group {
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 10px;
+            gap: 3px;
+            font-size: 9px;
             font-weight: 900;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
-        .flag-element {
+        .flag-rect {
             width: 14px;
             height: 9px;
             display: flex;
             flex-direction: column;
             border: 0.5px solid #999;
         }
-        .flag-element .f-w { background: #fff; flex: 1; }
-        .flag-element .f-b { background: #0024a5; flex: 1; }
-        .flag-element .f-r { background: #e30000; flex: 1; }
-        /* Текст описания под номером */
-        .tags-container {
+        .flag-rect .line-w { background: #fff; flex: 1; }
+        .flag-rect .line-b { background: #0024a5; flex: 1; }
+        .flag-rect .line-r { background: #e30000; flex: 1; }
+
+        /* Серые подписи совпадений */
+        .matches-list-box {
             display: flex;
             flex-direction: column;
             gap: 6px;
             align-items: center;
             width: 100%;
-            margin-bottom: 40px;
-            min-height: 70px;
+            min-height: 90px;
+            margin-bottom: auto;
         }
 
-        .tag-line {
-            font-size: 14px;
-            color: #888888;
+        .match-row-text {
+            font-size: 15px;
+            color: #555558;
             font-weight: 400;
         }
 
-        /* Нижний таб-бар выбора режима */
-        .bottom-selector {
-            background: #1a1a1c;
-            border-radius: 12px;
-            padding: 10px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-top: auto;
-            cursor: pointer;
-            border: 1px solid #242426;
-        }
-
-        .selector-left {
+        /* Овальная плашка переключения типов */
+        .pill-menu-btn {
+            background: #18181a;
+            border-radius: 18px;
+            padding: 8px 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #ffffff;
-        }
-
-        .selector-flag {
-            width: 20px;
-            height: 13px;
-            border: 0.5px solid #444;
-        }
-
-        .selector-right {
+            justify-content: center;
+            gap: 6px;
             font-size: 13px;
-            color: #777779;
-        }
-
-        /* Главная кнопка «Крутить» / «Продать» */
-        .big-action-btn {
-            width: 100%;
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .big-action-btn.sell-state {
-            background: #ca8a04;
+            font-weight: 500;
             color: #ffffff;
+            border: 1px solid #242426;
+            width: fit-content;
+            margin: 40px auto 4px auto;
         }
 
-        .shake-effect {
-            animation: mini-shake 0.05s infinite alternate;
+        .pill-icon-flag {
+            width: 16px;
+            height: 10px;
+            border: 0.5px solid #333;
         }
-        @keyframes mini-shake {
+
+        .sub-text-link {
+            font-size: 12px;
+            color: #555558;
+            text-decoration: none;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .shake-animation {
+            animation: plate-vibrate 0.05s infinite alternate;
+        }
+        @keyframes plate-vibrate {
             0% { transform: translateY(-1px); }
             100% { transform: translateY(1px); }
         }
@@ -297,267 +266,226 @@
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Верхнее меню и кошелек -->
-        <div class="header-menu">
-            <span class="menu-icon">☰</span>
-            <div class="wallet-container">
-                <span class="balance" id="moneyText">0 ₽</span>
-                <span class="diamonds">🔹 0</span>
+    <div class="wrapper">
+        <!-- Оригинальный топ бар -->
+        <div class="top-nav">
+            <span class="burger-btn">☰</span>
+            <div class="currencies">
+                <span id="cashCount">14 696 357 ₽</span>
+                <span class="cur-diamonds">🔹 <span id="gemsCount">0</span></span>
             </div>
         </div>
 
-        <!-- Рекорд один в один -->
-        <div class="record-box">
-            <div class="record-info">
-                Новый рекорд: номер за <br>
-                <strong id="recordText">0 ₽</strong>
+        <!-- Баннер рекорда один в один -->
+        <div class="record-banner-box">
+            <div class="record-inner-text">
+                Новый рекорд: номер за <span id="recordLabel">32 681 <br>250 ₽!</span>
             </div>
-            <a href="#" class="record-link" id="sellBtn">Открыть ➔</a>
+            <a href="#" class="record-link-arrow" id="sellAction">Открыть ➔</a>
         </div>
 
-        <!-- Редкость -->
-        <div class="rarity-section">
-            <span class="rarity-title" id="rarityLabel">Обычный</span>
-            <div class="rarity-dots" id="dotsBox">
-                <div class="dot"></div>
-            </div>
-        </div>
-
-        <!-- Стоимость текущего номера -->
-        <div class="price-display" id="priceText">0 ₽</div>
-
-        <!-- Автомобильный знак -->
-        <div class="plate-frame">
-            <div class="plate-inner" id="plateAnimateBox">
-                <div class="plate-left-side">
-                    <span class="font-fix" id="b1">А</span>
-                    <span id="v1">0</span>
-                    <span id="v2">0</span>
-                    <span id="v3">1</span>
-                    <span class="font-fix" id="b2">М</span>
-                    <span class="font-fix" id="b3">Р</span>
+        <!-- Роу редкости и цены -->
+        <div class="rarity-price-row">
+            <div class="rarity-badge-block">
+                <span class="rarity-text-label" id="rarityTitle" style="color: #e5b842;">Легендарный</span>
+                <div class="rarity-lines-grid" id="dashesLayout">
+                    <div class="rarity-dash-item" style="background: #e5b842;"></div>
+                    <div class="rarity-dash-item" style="background: #e5b842;"></div>
+                    <div class="rarity-dash-item" style="background: #e5b842;"></div>
+                    <div class="rarity-dash-item" style="background: #e5b842;"></div>
+                    <div class="rarity-dash-item" style="background: #e5b842;"></div>
                 </div>
-                <div class="plate-right-side">
-                    <span class="reg-code" id="regionText">77</span>
-                    <div class="rus-label">
+            </div>
+            <div class="big-price-label" id="priceLabel">32 681 250 ₽</div>
+        </div>
+        <!-- Клик по номеру крутит барабан -->
+        <div class="car-plate-border" id="plateTrigger">
+            <div class="car-plate-white" id="plateCore">
+                <div class="digits-letters-left">
+                    <span class="ios-font-fix" id="charL1">А</span>
+                    <span id="charN1">7</span>
+                    <span id="charN2">7</span>
+                    <span id="charN3">7</span>
+                    <span class="ios-font-fix" id="charL2">А</span>
+                    <span class="ios-font-fix" id="charL3">А</span>
+                </div>
+                <div class="region-section-right">
+                    <span class="reg-number-bold" id="regionBlock">77</span>
+                    <div class="rus-flag-group">
                         <span>RUS</span>
-                        <div class="flag-element">
-                            <div class="f-w"></div>
-                            <div class="f-b"></div>
-                            <div class="f-r"></div>
+                        <div class="flag-rect">
+                            <div class="line-w"></div>
+                            <div class="line-b"></div>
+                            <div class="line-r"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Подписи совпадений -->
-        <div class="tags-container" id="labelsBox">
-            <div class="tag-line">Нажмите кнопку снизу для генерации</div>
+        <!-- Текстовые подписи -->
+        <div class="matches-list-box" id="matchesDisplay">
+            <div class="match-row-text">Цифры совпадают с регионом</div>
+            <div class="match-row-text">3 одинаковые буквы</div>
+            <div class="match-row-text">3 одинаковые цифры</div>
         </div>
 
-        <!-- Главная кнопка -->
-        <button class="big-action-btn" id="spinBtn">Крутить (-100 ₽)</button>
-
-        <!-- Нижняя плашка режима -->
-        <div class="bottom-selector">
-            <div class="selector-left">
-                <img class="selector-flag" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 9 6'><rect fill='%23fff' width='9' height='2'/><rect fill='%230032A0' y='2' width='9' height='2'/><rect fill='%23DA291C' y='4' width='9' height='2'/></svg>">
-                <span>Россия 2 типа</span>
-            </div>
-            <span class="selector-right">Показать оригинал</span>
+        <!-- Нижний блок меню один в один -->
+        <div class="pill-menu-btn">
+            <img class="pill-icon-flag" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 9 6'><rect fill='%23fff' width='9' height='2'/><rect fill='%230032A0' y='2' width='9' height='2'/><rect fill='%23DA291C' y='4' width='9' height='2'/></svg>">
+            <span>Россия 2 типа</span>
         </div>
+        <a href="#" class="sub-text-link">Показать оригинал</a>
     </div>
+
     <script>
-        // Игровой баланс и рекорд
-        let wallet = parseInt(localStorage.getItem('m_wallet')) || 15000;
-        let record = parseInt(localStorage.getItem('m_record')) || 0;
-        let currentPrice = 0;
-        let isReadyToSell = false;
+        // Игровые данные из оригинала
+        let userCash = parseInt(localStorage.getItem('orig_cash')) || 14696357;
+        let bestRecord = parseInt(localStorage.getItem('orig_record_val')) || 32681250;
+        let calculatedValue = 32681250;
+        let animationActive = false;
 
-        const rusLetters = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
-        const rusRegions = ['77', '99', '177', '777', '799', '97', '78', '98', '178', '198', '50', '90'];
+        const alphabet = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
+        const mRegions = ['77', '99', '177', '777', '799', '78', '98', '178', '198', '50', '90'];
 
-        const spinBtn = document.getElementById('spinBtn');
-        const sellBtn = document.getElementById('sellBtn');
-        const moneyText = document.getElementById('moneyText');
-        const recordText = document.getElementById('recordText');
-        const priceText = document.getElementById('priceText');
-        const rarityLabel = document.getElementById('rarityLabel');
-        const dotsBox = document.getElementById('dotsBox');
-        const labelsBox = document.getElementById('labelsBox');
-        const plateAnimateBox = document.getElementById('plateAnimateBox');
+        const plateTrigger = document.getElementById('plateTrigger');
+        const sellAction = document.getElementById('sellAction');
+        const cashCount = document.getElementById('cashCount');
+        const recordLabel = document.getElementById('recordLabel');
+        const priceLabel = document.getElementById('priceLabel');
+        const rarityTitle = document.getElementById('rarityTitle');
+        const dashesLayout = document.getElementById('dashesLayout');
+        const matchesDisplay = document.getElementById('matchesDisplay');
+        const plateCore = document.getElementById('plateCore');
 
-        // Вывод при старте
-        moneyText.innerText = wallet.toLocaleString('ru-RU') + ' ₽';
-        recordText.innerText = record.toLocaleString('ru-RU') + ' ₽';
+        // Вывод при старте страницы
+        cashCount.innerText = userCash.toLocaleString('ru-RU') + ' ₽';
+        recordLabel.innerHTML = bestRecord.toLocaleString('ru-RU').replace(/\s/g, ' ') + ' ₽!';
+        priceLabel.innerText = calculatedValue.toLocaleString('ru-RU') + ' ₽';
 
-        spinBtn.addEventListener('click', handleAction);
-        sellBtn.addEventListener('click', (e) => { e.preventDefault(); sellPlate(); });
+        // Генерация при клике на сам автомобильный номер
+        plateTrigger.addEventListener('click', executeSpin);
+        // Продажа по клику на кнопку в баннере рекорда
+        sellAction.addEventListener('click', (e) => { e.preventDefault(); processSale(); });
 
-        function handleAction() {
-            if (isReadyToSell) {
-                sellPlate();
-            } else {
-                startSpin();
-            }
-        }
-
-        function generateData() {
+        function makeRandomObj() {
             return {
-                c1: rusLetters[Math.floor(Math.random() * rusLetters.length)],
-                c2: rusLetters[Math.floor(Math.random() * rusLetters.length)],
-                c3: rusLetters[Math.floor(Math.random() * rusLetters.length)],
-                n1: Math.floor(Math.random() * 10),
-                n2: Math.floor(Math.random() * 10),
-                n3: Math.floor(Math.random() * 10),
-                reg: rusRegions[Math.floor(Math.random() * rusRegions.length)]
+                l1: alphabet[Math.floor(Math.random() * alphabet.length)],
+                l2: alphabet[Math.floor(Math.random() * alphabet.length)],
+                l3: alphabet[Math.floor(Math.random() * alphabet.length)],
+                d1: Math.floor(Math.random() * 10),
+                d2: Math.floor(Math.random() * 10),
+                d3: Math.floor(Math.random() * 10),
+                rg: mRegions[Math.floor(Math.random() * mRegions.length)]
             };
         }
 
-        function evaluatePlate(p) {
-            let base = Math.floor(Math.random() * 300) + 150;
-            let tags = [];
-            let mult = 1;
-            
-            // Настройки редкости по умолчанию
-            let config = { name: "Обычный", color: "#9ca3af", dots: 1 };
+        function executeSpin() {
+            if (animationActive) return;
+            animationActive = true;
+            plateCore.classList.add('shake-animation');
 
-            const isTripleNum = (p.n1 === p.n2 && p.n2 === p.n3);
-            const isTripleLet = (p.c1 === p.c2 && p.c2 === p.c3);
-            const numStr = `${p.n1}${p.n2}${p.n3}`;
-            const isRegMatch = (numStr === p.reg || `7${numStr}` === p.reg);
+            let runCount = 0;
+            const timerId = setInterval(() => {
+                let temp = makeRandomObj();
+                document.getElementById('charL1').innerText = temp.l1;
+                document.getElementById('charN1').innerText = temp.d1;
+                document.getElementById('charN2').innerText = temp.d2;
+                document.getElementById('charN3').innerText = temp.d3;
+                document.getElementById('charL2').innerText = temp.l2;
+                document.getElementById('charL3').innerText = temp.l3;
+                document.getElementById('regionBlock').innerText = temp.rg;
+                runCount++;
 
-            if (isTripleLet) {
-                tags.push("3 одинаковые буквы");
-                mult *= 450;
-                config = { name: "Редкий", color: "#60a5fa", dots: 3 };
-            }
-            if (isTripleNum) {
-                tags.push("3 одинаковые цифры");
-                mult *= 1800;
-                config = { name: "Эпический", color: "#b48aef", dots: 4 };
-            }
-            if (isRegMatch) {
-                tags.push("Цифры совпадают с регионом");
-                mult *= 8500;
-                config = { name: "Легендарный", color: "#ca8a04", dots: 5 };
-            }
+                if (runCount > 13) {
+                    clearInterval(timerId);
+                    plateCore.classList.remove('shake-animation');
 
-            // Комбинация А777АА 77 как на твоем скриншоте
-            if (isTripleNum && p.n1 === 7 && isTripleLet) {
-                tags.push("Цифры совпадают с регионом");
-                tags.push("3 одинаковые буквы");
-                tags.push("3 одинаковые цифры");
-                mult *= 15000;
-                config = { name: "Легендарный", color: "#ca8a04", dots: 5 };
-            }
+                    let fObj = makeRandomObj();
+                    let captions = [];
+                    let multiplierVal = 1;
+                    
+                    // По умолчанию обычный (серый) статус
+                    let viewConfig = { text: "Обычный", color: "#8e8e93", count: 1 };
 
-            if (tags.length === 0) tags.push("Обычное сочетание");
+                    const checkNums = (fObj.d1 === fObj.d2 && fObj.d2 === fObj.d3);
+                    const checkLets = (fObj.l1 === fObj.l2 && fObj.l2 === fObj.l3);
+                    const coreNums = `${fObj.d1}${fObj.d2}${fObj.d3}`;
+                    const checkReg = (coreNums === fObj.rg || `7${coreNums}` === fObj.rg);
 
-            return { price: base * mult, tags: tags, config: config };
-        }
+                    if (checkLets) {
+                        captions.push("3 одинаковые буквы");
+                        multiplierVal *= 320;
+                        viewConfig = { text: "Редкий", color: "#3b82f6", count: 3 };
+                    }
+                    if (checkNums) {
+                        captions.push("3 одинаковые цифры");
+                        multiplierVal *= 1500;
+                        viewConfig = { text: "Эпический", color: "#9a69fa", count: 4 };
+                    }
+                    if (checkReg) {
+                        captions.push("Цифры совпадают с регионом");
+                        multiplierVal *= 7500;
+                        viewConfig = { text: "Легендарный", color: "#e5b842", count: 5 };
+                    }
 
-        function startSpin() {
-            if (wallet < 100) {
-                alert("Баланс пополнен пособием игры на 10 000 ₽!");
-                wallet = 10000;
-                moneyText.innerText = wallet.toLocaleString('ru-RU') + ' ₽';
-                localStorage.setItem('m_wallet', wallet);
-                return;
-            }
-
-            wallet -= 100;
-            moneyText.innerText = wallet.toLocaleString('ru-RU') + ' ₽';
-            localStorage.setItem('m_wallet', wallet);
-
-            spinBtn.disabled = true;
-            plateAnimateBox.classList.add('shake-effect');
-
-            let count = 0;
-            const timer = setInterval(() => {
-                let rnd = generateData();
-                document.getElementById('b1').innerText = rnd.c1;
-                document.getElementById('v1').innerText = rnd.n1;
-                document.getElementById('v2').innerText = rnd.n2;
-                document.getElementById('v3').innerText = rnd.n3;
-                document.getElementById('b2').innerText = rnd.c2;
-                document.getElementById('b3').innerText = rnd.c3;
-                document.getElementById('regionText').innerText = rnd.reg;
-                count++;
-
-                if (count > 14) {
-                    clearInterval(timer);
-                    plateAnimateBox.classList.remove('shake-effect');
-
-                    let final = generateData();
-                    // Шанс подкрутить Легендарку для фана (15%)
+                    // Шанс 15% дропнуть чистый рекорд А777АА 77 как со скрина
                     if (Math.random() < 0.15) {
-                        final.n1 = 7; final.n2 = 7; final.n3 = 7;
-                        final.c1 = 'А'; final.c2 = 'А'; final.c3 = 'А';
-                        final.reg = '77';
+                        fObj.d1 = 7; fObj.d2 = 7; fObj.d3 = 7;
+                        fObj.l1 = 'А'; fObj.l2 = 'А'; fObj.l3 = 'А'; fObj.rg = '77';
+                        captions = ["Цифры совпадают с регионом", "3 одинаковые буквы", "3 одинаковые цифры"];
+                        multiplierVal = 22232;
+                        viewConfig = { text: "Легендарный", color: "#e5b842", count: 5 };
                     }
 
-                    document.getElementById('b1').innerText = final.c1;
-                    document.getElementById('v1').innerText = final.n1;
-                    document.getElementById('v2').innerText = final.n2;
-                    document.getElementById('v3').innerText = final.n3;
-                    document.getElementById('b2').innerText = final.c2;
-                    document.getElementById('b3').innerText = final.c3;
-                    document.getElementById('regionText').innerText = final.reg;
+                    document.getElementById('charL1').innerText = fObj.l1;
+                    document.getElementById('charN1').innerText = fObj.d1;
+                    document.getElementById('charN2').innerText = fObj.d2;
+                    document.getElementById('charN3').innerText = fObj.d3;
+                    document.getElementById('charL2').innerText = fObj.l2;
+                    document.getElementById('charL3').innerText = fObj.l3;
+                    document.getElementById('regionBlock').innerText = fObj.rg;
 
-                    let res = evaluatePlate(final);
-                    currentPrice = res.price;
+                    calculatedValue = (Math.floor(Math.random() * 150) + 1450) * multiplierVal;
+                    priceLabel.innerText = calculatedValue.toLocaleString('ru-RU') + ' ₽';
 
-                    // Отрисовка цены и статуса под оригинал
-                    priceText.innerText = currentPrice.toLocaleString('ru-RU') + ' ₽';
-                    rarityLabel.innerText = res.config.name;
-                    rarityLabel.style.color = res.config.color;
+                    rarityTitle.innerText = viewConfig.text;
+                    rarityTitle.style.color = viewConfig.color;
 
-                    // Рисуем деления редкости
-                    dotsBox.innerHTML = "";
-                    for(let i=0; i<res.config.dots; i++) {
-                        let d = document.createElement('div');
-                        d.className = "dot";
-                        d.style.background = res.config.color;
-                        dotsBox.appendChild(d);
+                    dashesLayout.innerHTML = "";
+                    for (let i = 0; i < viewConfig.count; i++) {
+                        let dash = document.createElement('div');
+                        dash.className = "rarity-dash-item";
+                        dash.style.background = viewConfig.color;
+                        dashesLayout.appendChild(dash);
                     }
 
-                    // Вывод текстовых подписей совпадений
-                    labelsBox.innerHTML = "";
-                    res.tags.forEach(t => {
-                        let l = document.createElement('div');
-                        l.className = "tag-line";
-                        l.innerText = t;
-                        labelsBox.appendChild(l);
+                    matchesDisplay.innerHTML = "";
+                    if (captions.length === 0) captions.push("Обычное сочетание");
+                    captions.forEach(str => {
+                        let block = document.createElement('div');
+                        block.className = "match-row-text";
+                        block.innerText = str;
+                        matchesDisplay.appendChild(block);
                     });
 
-                    // Сохранение рекорда
-                    if (currentPrice > record) {
-                        record = currentPrice;
-                        recordText.innerText = record.toLocaleString('ru-RU') + ' ₽';
-                        localStorage.setItem('m_record', record);
+                    if (calculatedValue > bestRecord) {
+                        bestRecord = calculatedValue;
+                        recordLabel.innerHTML = bestRecord.toLocaleString('ru-RU').replace(/\s/g, ' ') + ' ₽!';
+                        localStorage.setItem('orig_record_val', bestRecord);
                     }
 
-                    // Меняем режим кнопки на Продажу
-                    isReadyToSell = true;
-                    spinBtn.innerText = "Продать номер";
-                    spinBtn.classList.add('sell-state');
-                    spinBtn.disabled = false;
+                    animationActive = false;
                 }
-            }, 60);
+            }, 55);
         }
 
-        function sellPlate() {
-            wallet += currentPrice;
-            moneyText.innerText = wallet.toLocaleString('ru-RU') + ' ₽';
-            localStorage.setItem('m_wallet', wallet);
-
-            isReadyToSell = false;
-            spinBtn.innerText = "Крутить (-100 ₽)";
-            spinBtn.classList.remove('sell-state');
-            priceText.innerText = "Продано!";
+        function processSale() {
+            userCash += calculatedValue;
+            cashCount.innerText = userCash.toLocaleString('ru-RU') + ' ₽';
+            localStorage.setItem('orig_cash', userCash);
+            priceLabel.innerText = "0 ₽";
+            matchesDisplay.innerHTML = '<div class="match-row-text">Номер продан в коллекцию!</div>';
         }
     </script>
 </body>
