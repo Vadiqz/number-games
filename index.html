@@ -1,319 +1,355 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Генератор номеров РФ</title>
-    <style>
-        :root {
-            --bg-color: #121214;
-            --card-bg: #1a1a1e;
-            --accent-color: #3b82f6;
-            --text-color: #f4f4f5;
-        }
+:root {
+--bg: #09090b;
+--card: #18181b;
+--accent: #2563eb;
+--accent-hover: #1d4ed8;
+--text: #f4f4f5;
+--muted: #a1a1aa;
+}
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+-webkit-tap-highlight-color: transparent;
+user-select: none;
+}
+body {
+background-color: var(--bg);
+color: var(--text);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+min-height: 100vh;
+padding: 20px;
+padding-bottom: calc(20px + env(safe-area-inset-bottom));
+}
+.game-container {
+width: 100%;
+max-width: 400px;
+background: var(--card);
+border-radius: 28px;
+padding: 24px;
+box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+border: 1px solid rgba(255,255,255,0.06);
+text-align: center;
+}
+.stats-bar {
+display: flex;
+justify-content: space-between;
+margin-bottom: 24px;
+background: rgba(255,255,255,0.03);
+padding: 12px 16px;
+border-radius: 16px;
+border: 1px solid rgba(255,255,255,0.03);
+}
+.stat-item {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.stat-label {
+font-size: 11px;
+text-transform: uppercase;
+color: var(--muted);
+letter-spacing: 0.5px;
+margin-bottom: 2px;
+}
+.stat-val {
+font-size: 18px;
+font-weight: 700;
+}
+.stat-val.money { color: #22c55e; }
+.stat-val.xp { color: #a855f7; }
+h1 {
+font-size: 20px;
+margin-bottom: 20px;
+font-weight: 800;
+letter-spacing: -0.5px;
+}
+.license-frame {
+background: #0d0d0d;
+padding: 8px;
+border-radius: 14px;
+margin-bottom: 25px;
+box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 8px 16px rgba(0,0,0,0.4);
+border: 1px solid #222;
+}
+.license-plate {
+background: #ffffff;
+color: #000000;
+border-radius: 8px;
+height: 76px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0 12px;
+border: 3px solid #000000;
+position: relative;
+font-weight: 700;
+}
+.plate-left {
+font-size: 48px;
+display: flex;
+align-items: center;
+gap: 1px;
+font-family: 'Courier New', Courier, monospace;
+font-weight: 900;
+}
+.plate-left .letter {
+font-size: 32px;
+margin-top: 10px;
+font-family: -apple-system, sans-serif;
+}
+.plate-divider {
+border-left: 3px solid #000;
+height: 100%;
+width: 75px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+margin-left: 10px;
+padding-left: 4px;
+}
+.region-num {
+font-size: 32px;
+line-height: 1;
+font-weight: 800;
+}
+.country-status {
+display: flex;
+align-items: center;
+gap: 3px;
+font-size: 10px;
+font-weight: 900;
+margin-top: 2px;
+}
+.flag-rf {
+width: 15px;
+height: 9px;
+display: flex;
+flex-direction: column;
+border: 0.5px solid #bbb;
+}
+.flag-rf .w { background: #fff; flex: 1; }
+.flag-rf .b { background: #0024a5; flex: 1; }
+.flag-rf .r { background: #e30000; flex: 1; }
+.rarity-toast {
+font-size: 14px;
+font-weight: 700;
+height: 20px;
+margin-bottom: 15px;
+color: var(--muted);
+}
+.action-button {
+width: 100%;
+background: var(--accent);
+color: #fff;
+border: none;
+padding: 18px;
+border-radius: 16px;
+font-size: 18px;
+font-weight: 700;
+cursor: pointer;
+box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+}
+.action-button:active {
+background: var(--accent-hover);
+}
+.action-button:disabled {
+background: #27272a;
+color: #71717a;
+box-shadow: none;
+}
+.history-section {
+margin-top: 24px;
+text-align: left;
+}
+.history-header {
+font-size: 12px;
+color: var(--muted);
+text-transform: uppercase;
+letter-spacing: 0.5px;
+margin-bottom: 8px;
+}
+.history-container {
+display: flex;
+flex-direction: column;
+gap: 8px;
+max-height: 140px;
+overflow-y: auto;
+}
+.history-row {
+background: rgba(255,255,255,0.02);
+border: 1px solid rgba(255,255,255,0.04);
+padding: 10px 14px;
+border-radius: 10px;
+font-size: 14px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.row-tag {
+font-weight: 700;
+font-family: monospace;
+background: #fff;
+color: #000;
+padding: 2px 6px;
+border-radius: 4px;
+font-size: 12px;
+}
+.row-bonus { font-weight: 700; }
+.bonus-plus { color: #22c55e; }
+.bonus-none { color: var(--muted); }
+.shake-plate {
+animation: plate-move 0.06s infinite alternate;
+}
+@keyframes plate-move {
+0% { transform: translateY(-1.5px); }
+100% { transform: translateY(1.5px); }
+}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+Баланс
+1 000 ₽
 
-        .container {
-            width: 100%;
-            max-width: 420px;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
 
-        h1 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
+Авторитет
+0 XP
 
-        /* Стиль оригинального автономера РФ */
-        .plate-container {
-            background: #000;
-            padding: 6px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-        }
+🎰 Симулятор номеров
+А
+7
+7
+7
+А
+А
 
-        .plate {
-            background: #ffffff;
-            color: #000000;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 5px 10px;
-            height: 80px;
-            border: 2px solid #000;
-            position: relative;
-            font-weight: 700;
-            user-select: none;
-        }
 
-        .plate-main {
-            font-size: 45px;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            height: 100%;
-            font-family: monospace, sans-serif;
-        }
+777
 
-        .plate-main span {
-            display: inline-block;
-        }
+RUS
 
-        .plate-main .letter {
-            font-size: 32px;
-            margin-top: 5px;
-        }
 
-        .plate-right {
-            border-left: 2px solid #000;
-            height: 100%;
-            width: 85px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding-left: 5px;
-        }
 
-        .region-code {
-            font-size: 32px;
-            line-height: 1;
-            margin-bottom: 2px;
-        }
 
-        .country {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            font-weight: 800;
-        }
 
-        .flag {
-            width: 16px;
-            height: 10px;
-            display: flex;
-            flex-direction: column;
-            border: 0.5px solid #ccc;
-        }
-        .flag-white { background: #fff; flex: 1; }
-        .flag-blue { background: #0033aa; flex: 1; }
-        .flag-red { background: #dd0000; flex: 1; }
 
-        /* Настройки режимов */
-        .modes {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
 
-        .mode-btn {
-            background: #27272a;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #a1a1aa;
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-        }
 
-        .mode-btn.active {
-            background: var(--accent-color);
-            color: #fff;
-            border-color: var(--accent-color);
-        }
+Испытай свою удачу!
+КРУТИТЬ (-50 ₽)
+Гараж редких находок:
 
-        .btn {
-            width: 100%;
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
-            transition: transform 0.1s;
-        }
 
-        .btn:active {
-            transform: scale(0.97);
-        }
-
-        .history {
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .history-title {
-            font-size: 12px;
-            color: #71717a;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        .history-item {
-            background: rgba(255,255,255,0.03);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        .rolling {
-            animation: shake 0.05s infinite alternate;
-        }
-        @keyframes shake {
-            0% { transform: translateY(-1px); }
-            100% { transform: translateY(1px); }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h1>🚗 Госномер РФ</h1>
-        
-        <div class="plate-container">
-            <div class="plate" id="plate">
-                <div class="plate-main">
-                    <span class="letter" id="l1">А</span>
-                    <span id="n1">7</span>
-                    <span id="n2">7</span>
-                    <span id="n3">7</span>
-                    <span class="letter" id="l2">А</span>
-                    <span class="letter" id="l3">А</span>
-                </div>
-                <div class="plate-right">
-                    <div class="region-code" id="region">777</div>
-                    <div class="country">
-                        <span>RUS</span>
-                        <div class="flag">
-                            <div class="flag-white"></div>
-                            <div class="flag-blue"></div>
-                            <div class="flag-red"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modes">
-            <button class="mode-btn active" onclick="setMode('all')">🎲 Все подряд</button>
-            <button class="mode-btn" onclick="setMode('triple')">💎 Три одинаковых</button>
-            <button class="mode-btn" onclick="setMode('ooo')">🔥 Буквы ААА/ООО</button>
-            <button class="mode-btn" onclick="setMode('777')">🎰 Только 777</button>
-        </div>
-
-        <button class="btn" id="genBtn" onclick="generatePlate()">КРУТИТЬ НОМЕР</button>
-
-        <div class="history">
-            <div class="history-title">История выбитых:</div>
-            <div class="history-list" id="historyList"></div>
-        </div>
-    </div>
-
-    <script>
-        // Разрешенные буквы в номерах РФ
-        const letters = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
-        // Популярные регионы РФ
-        const regions = ['77', '99', '177', '777', '799', '78', '98', '178', '198', '50', '90', '150', '750', '23', '93', '123', '16', '116', '716', '54', '154'];
-        
-        let currentMode = 'all';
-        const history = [];
-
-        function setMode(mode) {
-            currentMode = mode;
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-
-        function getRandom(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
-
-        function getFakeNumber() {
-            let l1 = getRandom(letters);
-            let l2 = getRandom(letters);
-            let l3 = getRandom(letters);
-            let n1 = Math.floor(Math.random() * 10);
-            let n2 = Math.floor(Math.random() * 10);
-            let n3 = Math.floor(Math.random() * 10);
-            let reg = getRandom(regions);
-
-            // Обработка режимов
-            if (currentMode === 'triple') {
-                let num = Math.floor(Math.random() * 10);
-                n1 = num; n2 = num; n3 = num;
-            } else if (currentMode === 'ooo') {
-                let letChoice = getRandom(['А', 'О', 'В', 'М', 'Е']);
-                l1 = letChoice; l2 = letChoice; l3 = letChoice;
-            } else if (currentMode === '777') {
-                n1 = 7; n2 = 7; n3 = 7;
-                reg = getRandom(['77', '777', '799']);
-            }
-
-            return { l1, n1, n2, n3, l2, l3, reg };
-        }
-
-        function generatePlate() {
-            const btn = document.getElementById('genBtn');
-            const plate = document.getElementById('plate');
-            btn.disabled = true;
-            plate.classList.add('rolling');
-
-            let ticks = 0;
-            const interval = setInterval(() => {
-                let res = getFakeNumber();
-                document.getElementById('l1').innerText = res.l1;
-                document.getElementById('n1').innerText = res.n1;
-                document.getElementById('n2').innerText = res.n2;
-                document.getElementById('n3').innerText = res.n3;
-                document.getElementById('l2').innerText = res.l2;
-                document.getElementById('l3').innerText = res.l3;
-                document.getElementById('region').innerText = res.reg;
-                
-                ticks++;
-                if (ticks > 15) {
+let money = 1000;
+let xp = 0;
+const rollCost = 50;
+const allowedLetters = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
+const popularRegions = ['77', '99', '177', '777', '799', '78', '98', '178', '198', '50', '90'];
+const rollBtn = document.getElementById('rollBtn');
+const plateElement = document.getElementById('plateElement');
+const toastDisplay = document.getElementById('toastDisplay');
+const balanceDisplay = document.getElementById('balanceDisplay');
+const xpDisplay = document.getElementById('xpDisplay');
+const historyBox = document.getElementById('historyBox');
+rollBtn.addEventListener('click', startRoll);
+rollBtn.addEventListener('touchend', function(e) {
+e.preventDefault();
+startRoll();
+});
+function formatMoney(amount) {
+return amount.toLocaleString('ru-RU') + ' ₽';
+}
+function generateRandomData() {
+return {
+c1: allowedLetters[Math.floor(Math.random() * allowedLetters.length)],
+c2: allowedLetters[Math.floor(Math.random() * allowedLetters.length)],
+c3: allowedLetters[Math.floor(Math.random() * allowedLetters.length)],
+n1: Math.floor(Math.random() * 10),
+n2: Math.floor(Math.random() * 10),
+n3: Math.floor(Math.random() * 10),
+reg: popularRegions[Math.floor(Math.random() * popularRegions.length)]
+};
+}
+function checkCombo(res) {
+const isTripleNum = (res.n1 === res.n2 && res.n2 === res.n3);
+const isTripleLet = (res.c1 === res.c2 && res.c2 === res.c3);
+const is777 = (res.n1 === 7 && res.n2 === 7 && res.n3 === 7);
+const isMirror = (res.n1 === res.n3 && res.n1 !== res.n2);
+if (is777 && isTripleLet) {
+return { name: '👑 АБСОЛЮТ (777 и Одинаковые буквы!)', cash: 5000, xp: 500, color: '#ef4444' };
+}
+if (is777) {
+return { name: '🎰 СУПЕР-ХИТ 777!', cash: 1500, xp: 200, color: '#eab308' };
+}
+if (isTripleNum) {
+return { name: '💎 ТРИ ОДИНАКОВЫХ ЧИСЛА', cash: 600, xp: 80, color: '#3b82f6' };
+}
+if (isTripleLet) {
+return { name: '🔥 БЛАТНАЯ СЕРИЯ БУКВ', cash: 400, xp: 50, color: '#a855f7' };
+}
+if (isMirror) {
+return { name: '✨ ЗЕРКАЛЬНЫЙ НОМЕР', cash: 150, xp: 20, color: '#06b6d4' };
+}
+return { name: 'Обычный номер', cash: 0, xp: 5, color: '#a1a1aa' };
+}
+function startRoll() {
+if (rollBtn.disabled) return;
+if (money < rollCost) {
+toastDisplay.innerText = '⚠️ Деньги кончились! Обнови страницу.';
+toastDisplay.style.color = '#ef4444';
+return;
+}
+money -= rollCost;
+balanceDisplay.innerText = formatMoney(money);
+rollBtn.disabled = true;
+plateElement.classList.add('shake-plate');
+toastDisplay.innerText = 'Выбираем автономер...';
+toastDisplay.style.color = 'var(--muted)';
+let ticks = 0;
+const maxTicks = 12;
+const animationInterval = setInterval(() => {
+const fake = generateRandomData();
+document.getElementById('char1').innerText = fake.c1;
+document.getElementById('char2').innerText = fake.c2;
+document.getElementById('char3').innerText = fake.c3;
+document.getElementById('num1').innerText = fake.n1;
+document.getElementById('num2').innerText = fake.n2;
+document.getElementById('num3').innerText = fake.n3;
+document.getElementById('regionDisplay').innerText = fake.reg;
+ticks++;
+if (ticks >= maxTicks) {
+clearInterval(animationInterval);
+plateElement.classList.remove('shake-plate');
+const final = generateRandomData();
+document.getElementById('char1').innerText = final.c1;
+document.getElementById('char2').innerText = final.c2;
+document.getElementById('char3').innerText = final.c3;
+document.getElementById('num1').innerText = final.n1;
+document.getElementById('num2').innerText = final.n2;
+document.getElementById('num3').innerText = final.n3;
+document.getElementById('regionDisplay').innerText = final.reg;
+const combo = checkCombo(final);
+money += combo.cash;
+xp += combo.xp;
+balanceDisplay.innerText = formatMoney(money);
+xpDisplay.innerText = ${xp} XP;
+toastDisplay.innerText = combo.name;
+toastDisplay.style.color = combo.color;
+const fullString = ${final.c1}${final.n1}${final.n2}${final.n3}${final.c2}${final.c3} ${final.reg};
+addToHistory(fullString, combo);
+rollBtn.disabled = false;
+}
+}, 65);
+}
+function addToHistory(plateStr, combo) {
+const row = document.createElement('div');
+row.className = 'history-row';
+let bonusText = combo.cash > 0 ? <span class="row-bonus bonus-plus">+${combo.cash} ₽</span> : <span class="row-bonus bonus-none">Обычный</span>;
+row.innerHTML = <span class="row-tag">${plateStr}</span><span>${bonusText}</span>;
+historyBox.insertBefore(row, historyBox.firstChild);
+if (historyBox.children.length > 10) historyBox.removeChild(historyBox.lastChild);
+}
