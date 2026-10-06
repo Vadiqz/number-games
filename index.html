@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Номерок | Генератор номеров</title>
+    <title>Номерок | Симулятор</title>
     <style>
         @import url('https://googleapis.com');
 
@@ -40,7 +40,6 @@
             height: 100%;
         }
 
-        /* Шапка игры */
         .top-status-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px; }
         .burger-box { position: relative; cursor: pointer; padding: 4px; }
         .burger-line { width: 20px; height: 2.5px; background: #ffffff; margin: 4px 0; border-radius: 2px; }
@@ -50,22 +49,24 @@
         .level-progress-fill { width: 65%; height: 100%; background: #22c55e; }
         .clover-badge { background: #1c1c1e; padding: 6px 12px; border-radius: 14px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
         .balance-box { text-align: right; }
-        .balance-label { font-size: 10px; color: #8e8e93; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .balance-label { font-size: 10px; color: #8e8e93; text-transform: uppercase; font-weight: 600; }
         .balance-value { font-size: 18px; font-weight: 800; }
 
-        .tabs-row { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; width: 100%; margin-bottom: 12px; }
-        .tab-btn { background: #2c2c2e; color: #a1a1aa; border: none; padding: 10px 0; border-radius: 10px; font-size: 13.5px; font-weight: 700; text-align: center; }
+        .tabs-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-bottom: 12px; }
+        .tab-btn { background: #2c2c2e; color: #a1a1aa; border: none; padding: 10px 0; border-radius: 10px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
         .tab-btn.active { background: #48484a; color: #ffffff; }
         .tab-btn.shop { background: #e5b842; color: #000000; position: relative; }
         .shop-dot { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 1px solid #e5b842; }
 
-        .info-banner { background: linear-gradient(90deg, #1d2a44 0%, #0f172a 100%); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; border: 1px solid rgba(59, 130, 246, 0.15); position: relative; }
+        .main-tab-view { display: none; width: 100%; flex-direction: column; }
+        .main-tab-view.active { display: flex; }
+        .info-banner { background: linear-gradient(90deg, #1d2a44 0%, #0f172a 100%); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; border: 1px solid rgba(59, 130, 246, 0.15); position: relative; text-align: left; }
         .banner-icon-box { width: 32px; height: 32px; background: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
         .banner-main-text { font-size: 12px; color: #93c5fd; line-height: 1.4; }
         .banner-arrow { position: absolute; right: 14px; color: #64748b; font-size: 14px; }
 
-        .ads-banner { background: #141416; border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 25px; border: 1px solid #242426; }
-        .ads-tag { font-size: 9px; color: #71717a; position: absolute; right: 24px; margin-top: -30px; text-transform: uppercase; font-weight: bold; }
+        .ads-banner { background: #141416; border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 25px; border: 1px solid #242426; text-align: left; position: relative; cursor: pointer; }
+        .ads-tag { font-size: 9px; color: #71717a; position: absolute; right: 14px; top: 10px; text-transform: uppercase; font-weight: bold; }
 
         .rarity-price-line { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; margin-bottom: 10px; padding: 0 4px; }
         .rarity-container { display: flex; flex-direction: column; align-items: flex-start; }
@@ -75,207 +76,46 @@
         .price-text-value { font-size: 22px; font-weight: bold; }
 
         .plate-outer { background: #000000; padding: 1px; border-radius: 10px; width: 100%; margin-bottom: 16px; border: 2px solid #2d2d30; }
-        .plate-inner-white { background: #f1f1f3; color: #000000; border-radius: 8px; height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border: 3px solid #000000; font-family: 'PT Sans Narrow', sans-serif; font-weight: 700; }
+        .plate-inner-white { background: #f8f8fa; color: #000000; border-radius: 8px; height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border: 3.5px solid #000000; font-family: 'PT Sans Narrow', -apple-system, sans-serif; font-weight: 700; }
         .plate-flag-section { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding-right: 12px; border-right: 3px solid #000000; gap: 3px; }
         .by-ornament-flag { width: 18px; height: 11px; background: linear-gradient(to bottom, #d2232a 60%, #009245 60%); position: relative; border: 0.5px solid #888; }
         .by-ornament-flag::before { content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%; background: #ffffff; border-right: 0.5px solid #d2232a; }
         .by-label-green { font-size: 13px; color: #009245; font-weight: 800; line-height: 1; }
-        .plate-numbers-center { font-size: 58px; display: flex; align-items: center; justify-content: center; width: 100%; letter-spacing: -1px; padding-left: 10px; }
-        .plate-numbers-center .letter-pack { font-size: 42px; margin-left: 2px; }
-        .plate-region-dash { font-size: 58px; font-weight: 700; display: flex; align-items: center; padding-left: 2px; }
+        
+        .plate-numbers-center { font-size: 56px; display: flex; align-items: center; justify-content: center; width: 100%; letter-spacing: -2px; padding-left: 8px; }
+        .plate-numbers-center .letter-pack { font-size: 40px; margin-left: 4px; letter-spacing: 0px; }
+        .plate-region-dash { font-size: 56px; font-weight: 700; display: flex; align-items: center; padding-left: 2px; }
 
-        .multipliers-box { display: flex; flex-direction: column; gap: 4px; align-items: center; width: 100%; margin-bottom: 20px; }
+        .multipliers-box { display: flex; flex-direction: column; gap: 4px; align-items: center; width: 100%; margin-bottom: 20px; min-height: 55px; }
         .region-subinfo { font-size: 11px; color: #555558; font-weight: 500; }
         .multiplier-row { font-size: 13.5px; color: #8e8e93; font-weight: 500; }
         .blue-x { color: #2563eb; font-weight: bold; }
 
         .action-buttons-row { display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; margin-bottom: auto; }
         .btn-garage { background: #1c1c1e; color: #ffffff; border: none; padding: 10px 24px; border-radius: 18px; font-size: 13.5px; font-weight: bold; cursor: pointer; }
-        .btn-share-square { background: #1c1c1e; color: #ffffff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; }
+        .btn-share-square { background: #1c1c1e; color: #ffffff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
 
         .bottom-bet-panel { display: flex; gap: 8px; width: 100%; margin-top: 25px; }
-        .pill-select-btn { background: #1c1c1e; border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: bold; border: 1px solid #2c2c2e; flex: 1; }
+        .pill-select-btn { background: #1c1c1e; border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: bold; border: 1px solid #2c2c2e; flex: 1; cursor: pointer; }
         .panel-flag-ico { width: 16px; height: 10px; background: linear-gradient(to bottom, #d2232a 60%, #009245 60%); }
-        .blue-star-ico { color: #2563eb; font-size: 12px; }
         .spin-submit-btn { background: #ffffff; color: #000000; border: none; padding: 14px 16px; border-radius: 16px; font-size: 13.5px; font-weight: bold; flex: 2; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .spin-submit-btn.disabled-state { background: #1c1c1e; color: #48484a; cursor: not-allowed; }
 
-        /* Полная копия всплывающего Мега-Меню */
         .mega-menu-overlay { position: fixed; bottom: -100%; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 100; transition: bottom 0.3s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; justify-content: flex-end; }
         .mega-menu-overlay.active { bottom: 0; }
-        .mega-menu-content { background: #1c1c1e; border-radius: 24px 24px 0 0; width: 100%; max-height: 88vh; padding: 20px 16px; overflow-y: auto; color: #ffffff; position: relative; border-top: 1px solid #2c2c2e; }
-        
-        /* Черточка закрытия сверху */
+        .mega-menu-content { background: #1c1c1e; border-radius: 24px 24px 0 0; width: 100%; max-height: 85vh; padding: 20px 16px; overflow-y: auto; color: #ffffff; position: relative; border-top: 1px solid #2c2c2e; }
         .close-handle { width: 36px; height: 4px; background: #48484a; border-radius: 2px; margin: -10px auto 16px auto; cursor: pointer; }
-        /* Сетка иконок Мега-Меню один в один */
-        .icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-        .icon-item { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: bold; color: #ffffff; cursor: pointer; position: relative; }
-        .icon-square { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
-        
-        .icon-square.green { background: #22c55e; }
-        .icon-square.blue { background: #3b82f6; }
-        .icon-square.pink { background: #ec4899; }
-        .icon-square.orange { background: #f97316; }
-        .icon-square.cyan { background: #06b6d4; }
-        .icon-square.purple { background: #a855f7; }
-
-        .red-dot-badge { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 1.5px solid #1c1c1e; }
-        .count-badge { position: absolute; top: -4px; right: -4px; background: #ffffff; color: #000000; font-size: 10px; font-weight: 800; padding: 1px 5px; border-radius: 8px; border: 1px solid #2c2c2e; }
-
-        /* Желтая плашка Магазина внутри меню */
-        .menu-shop-banner { background: #facc15; border-radius: 14px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #000000; cursor: pointer; }
-        .menu-shop-info { text-align: left; }
-        .menu-shop-title { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
-        .menu-shop-sub { font-size: 11px; font-weight: 600; opacity: 0.8; }
-        .menu-shop-arrow { font-size: 14px; font-weight: bold; opacity: 0.6; }
-
-        /* Категории списков меню */
-        .menu-category-title { font-size: 11px; text-transform: uppercase; color: #8e8e93; font-weight: 700; letter-spacing: 0.5px; margin: 16px 0 8px 4px; text-align: left; }
-        .menu-list-items { display: flex; flex-direction: column; background: #2c2c2e; border-radius: 14px; overflow: hidden; margin-bottom: 12px; }
-        .menu-list-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #3a3a3c; cursor: pointer; }
-        .menu-list-row:last-child { border-bottom: none; }
-        
-        .row-left-content { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: bold; }
-        .row-icon-box { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-        
-        .row-right-status { font-size: 13px; color: #8e8e93; font-weight: 500; display: flex; align-items: center; gap: 4px; }
-        .status-dot-red { width: 7px; height: 7px; background: #ef4444; border-radius: 50%; display: inline-block; margin-right: 4px; }
-    </style>
-</head>
-<body>
-
-    <!-- ВСПЛЫВАЮЩЕЕ МЕНЮ ОДИН В ОДИН -->
-    <div class="mega-menu-overlay" id="megaMenu">
-        <div class="mega-menu-content">
-            <div class="close-handle" id="closeMenuBtn"></div>
-
-            <!-- Сетка верхних иконок -->
-            <div class="icons-grid">
-                <div class="icon-item">
-                    <div class="icon-square green">🏠</div>
-                    <span>Гараж</span>
-                </div>
-                <div class="icon-item">
-                    <div class="icon-square blue">🚙<div class="count-badge">1</div></div>
-                    <span>Автопарк</span>
-                </div>
-                <div class="icon-item">
-                    <div class="icon-square pink">🏪</div>
-                    <span>Рынок</span>
-                </div>
-                <div class="icon-item">
-                    <div class="icon-square orange">🏆</div>
-                    <span>Рейтинг</span>
-                </div>
-                <div class="icon-item">
-                    <div class="icon-square green">📋<div class="red-dot-badge"></div></div>
-                    <span>Задания</span>
-                </div>
-                <div class="icon-item">
-                    <div class="icon-square orange">🎡<div class="red-dot-badge"></div></div>
-                    <span>Колесо</span>
-                </div>
-                <div class="icon-item">
-                    <div class="icon-square cyan">👥</div>
-                    <span>Друзья</span>
-                </div>
-                <div class="icon-item">
-                    <div class="icon-square pink">🎁</div>
-                    <span>Подарок</span>
-                </div>
-            </div>
-
-            <!-- Большая жёлтая кнопка Магазина -->
-            <div class="menu-shop-banner">
-                <div class="menu-shop-info">
-                    <div class="menu-shop-title">⭐ Магазин</div>
-                    <div class="menu-shop-sub">наборы, VIP, удача, контейнеры, рубли</div>
-                </div>
-                <span class="menu-shop-arrow">❯</span>
-            </div>
-
-            <!-- Категория: ИГРАТЬ -->
-            <div class="menu-category-title">Играть</div>
-            <div class="menu-list-items">
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#ca8a04;">✨</div>
-                        <span>Сезонный пропуск</span>
-                    </div>
-                    <span class="row-right-status">ур. 4 • забрать ❯</span>
-                </div>
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#ca8a04;">⭐</div>
-                        <span>Номер дня</span>
-                    </div>
-                    <span class="row-right-status">призы в полночь ❯</span>
-                </div>
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#ef4444;">🚘</div>
-                        <span>Апгрейдер</span>
-                    </div>
-                    <span class="row-right-status">x2 ... x10 ❯</span>
-                </div>
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#ca8a04;">🏁</div>
-                        <span>Заезды</span>
-                    </div>
-                    <span class="row-right-status"><span class="status-dot-red"></span>бак полон ❯</span>
-                </div>
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#3b82f6;">🎲</div>
-                        <span>Дуэли</span>
-                    </div>
-                    <span class="row-right-status">кубики и монетка ❯</span>
-                </div>
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#f97316;">🔨</div>
-                        <span>Звёздный аукцион</span>
-                    </div>
-                    <span class="row-right-status">уникальные номера ❯</span>
-                </div>
-            </div>
             <!-- Категория: МОЙ АККАУНТ -->
             <div class="menu-category-title">Мой аккаунт</div>
             <div class="menu-list-items">
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#22c55e;">📊</div>
-                        <span>История</span>
-                    </div>
-                    <span class="row-right-status">броски, деньги, звёзды ❯</span>
-                </div>
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#3b82f6;">📈</div>
-                        <span>Статистика</span>
-                    </div>
-                    <span class="row-right-status">Уровень 20 ❯</span>
-                </div>
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#ec4899;">💟</div>
-                        <span>Моя витрина</span>
-                    </div>
-                    <span class="row-right-status">трофеи и медали ❯</span>
-                </div>
-                <div class="menu-list-row">
-                    <div class="row-left-content">
-                        <div class="row-icon-box" style="background:#22c55e;">💱</div>
-                        <span>Перевод и обмен валют</span>
-                    </div>
-                    <span class="row-right-status">комиссия 7% ❯</span>
+                <div class="menu-list-row" onclick="showSavedGarage()">
+                    <div class="row-left-content"><div class="row-icon-box" style="background:#22c55e;">📊</div><span>Коллекция в памяти</span></div>
+                    <span class="row-right-status">открыть ❯</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ГЛАВНЫЙ ЭКРАН ИГРЫ -->
     <div class="container">
         <div class="top-status-bar">
             <div class="burger-box" id="openMenuBtn">
@@ -288,158 +128,87 @@
                 <span>Ур. 20</span>
                 <div class="level-progress"><div class="level-progress-fill"></div></div>
             </div>
-
             <div class="clover-badge"><span>🍀</span><span>28</span></div>
-
             <div class="balance-box">
-                <div class="balance-label">Баланс</div>
                 <div class="balance-value" id="walletDisplay">533 BYN</div>
             </div>
         </div>
 
         <div class="tabs-row">
-            <button class="tab-btn active">Номера</button>
-            <button class="tab-btn">Машины</button>
-            <button class="tab-btn shop">Магазин<div class="shop-dot"></div></button>
+            <button class="tab-btn active" id="btn-tab-numbers" onclick="switchView('numbers')">Номера</button>
+            <button class="tab-btn" id="btn-tab-cars" onclick="switchView('cars')">Машины</button>
+            <button class="tab-btn shop" id="btn-tab-shop" onclick="switchView('shop')">Магазин<div class="shop-dot"></div></button>
         </div>
 
-        <div class="info-banner">
-            <div class="banner-icon-box">NEW</div>
-            <div class="banner-main-text">Серия дня • <strong>регионы 5 Минская о...</strong><br>новая серия через 14:57:38</div>
-            <span class="banner-arrow">❯</span>
-        </div>
-
-        <div class="ads-banner">
-            <span class="ads-tag">Реклама</span>
-            <span style="font-size:20px;">🔹</span>
-            <div style="font-size:12px; font-weight:bold;"><strong>OMi VPN</strong> - впн который реально работает</div>
-        </div>
-
-        <div class="rarity-price-line">
-            <div class="rarity-container">
-                <span class="rarity-text" id="rarityTitle" style="color: #2563eb;">Редкий</span>
-                <div class="rarity-dashes">
-                    <div class="dash-item" style="background:#2563eb;"></div>
-                    <div class="dash-item" style="background:#2563eb;"></div>
-                    <div class="dash-item" style="background:#2563eb;"></div>
-                    <div class="dash-item"></div>
-                    <div class="dash-item"></div>
+        <div class="main-tab-view active" id="view-numbers">
+            <div class="info-banner" onclick="alert('Обновление серии скоро!')"><div class="banner-icon-box">NEW</div><div class="banner-main-text">Серия дня • <strong>регионы 5 Минская о...</strong></div><span class="banner-arrow">❯</span></div>
+            <div class="ads-banner" onclick="alert('Переход на твой VPN!')"><span class="ads-tag">Реклама</span><span>⚡</span><div style="font-size:12px;"><strong>ТВОЙ VPN</strong> - самый быстрый впн, который работает!</div></div>
+            <div class="rarity-price-line">
+                <div class="rarity-container"><span class="rarity-text" id="rarityTitle" style="color:#2563eb;">Редкий</span><div class="rarity-dashes" id="dashesBox"></div></div>
+                <div class="price-text-value" id="priceDisplay" style="color:#2563eb;">725 BYN</div>
+            </div>
+            <div class="plate-outer">
+                <div class="plate-inner-white" id="plateCore">
+                    <div class="plate-flag-section"><div class="by-ornament-flag"></div><span class="by-label-green">BY</span></div>
+                    <div class="plate-numbers-center" id="numCenterBlock">7177<span class="letter-pack">КР</span></div>
+                    <div class="plate-region-dash" id="regionBlock">-7</div>
                 </div>
             </div>
-            <div class="price-text-value" id="priceDisplay" style="color:#2563eb;">725 BYN</div>
-        </div>
-
-        <div class="plate-outer">
-            <div class="plate-inner-white" id="plateCore">
-                <div class="plate-flag-section">
-                    <div class="by-ornament-flag"></div>
-                    <span class="by-label-green">BY</span>
-                </div>
-                <div class="plate-numbers-center" id="numCenterBlock">7177<span class="letter-pack">КР</span></div>
-                <div class="plate-region-dash" id="regionBlock">-7</div>
+            <div class="multipliers-box" id="multipliersDisplay"></div>
+            <div class="action-buttons-row"><button class="btn-garage" id="saveToGarageBtn">В гараж</button></div>
+            <div class="bottom-bet-panel">
+                <div class="pill-select-btn"><span>Беларусь</span></div>
+                <div class="pill-select-btn"><span>Необычный+</span></div>
+                <button class="spin-submit-btn" id="spinBtn"><span>КРУТИТЬ</span><span class="cost-badge">560 BYN</span></button>
             </div>
         </div>
-
-        <div class="multipliers-box" id="multipliersDisplay">
-            <div class="region-subinfo">Код 7 • Минск</div>
-            <div class="multiplier-row">Минск — столичный регион <span class="blue-x">×1,3</span></div>
-            <div class="multiplier-row">Три семёрки <span class="blue-x">×300</span></div>
-        </div>
-
-        <div class="action-buttons-row">
-            <button class="btn-garage">В гараж</button>
-            <button class="btn-share-square">📤</button>
-        </div>
-
-        <div class="bottom-bet-panel">
-            <div class="pill-select-btn"><div class="panel-flag-ico"></div><span>Беларусь</span></div>
-            <div class="pill-select-btn"><span class="blue-star-ico">💎</span><span>Необычный+</span></div>
-            <div class="pill-select-btn" style="flex:0.6;"><span>5x</span></div>
-            <button class="spin-submit-btn disabled-state" id="spinBtn">
-                <span>Не хватает на ставку</span>
-                <span class="cost-badge">560 BYN</span>
-            </button>
-        </div>
+        <div class="main-tab-view" id="view-cars"><div class="list-container"><div class="list-card-item"><div><b>Geely Coolray</b></div><button class="card-item-btn" onclick="alert('Выбрано!')">Выбрать</button></div></div></div>
+        <div class="main-tab-view" id="view-shop"><div class="list-container"><div class="list-card-item"><div><b>📦 Контейнер "Минск"</b></div><button class="card-item-btn" onclick="alert('Скоро!')">Купить</button></div></div></div>
     </div>
-
     <script>
         let balanceBYN = parseInt(localStorage.getItem('b_cash_val')) || 533;
+        let savedGarageList = JSON.parse(localStorage.getItem('b_saved_garage')) || [];
         const currentBetCost = 560;
-        let spinningState = false;
-
-        const alphabetBY = ['А', 'В', 'Е', 'І', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
-
-        const megaMenu = document.getElementById('megaMenu');
-        const openMenuBtn = document.getElementById('openMenuBtn');
-        const closeMenuBtn = document.getElementById('closeMenuBtn');
-        const spinBtn = document.getElementById('spinBtn');
-        const walletDisplay = document.getElementById('walletDisplay');
-        const priceDisplay = document.getElementById('priceDisplay');
-        const rarityTitle = document.getElementById('rarityTitle');
-        const numCenterBlock = document.getElementById('numCenterBlock');
-        const regionBlock = document.getElementById('regionBlock');
-        const plateCore = document.getElementById('plateCore');
-
-        // Управление меню (плавный Bottom Sheet один в один)
+        let lastPlateStr = "7177 КР-7", lastRarityStr = "Редкий", lastPriceVal = 725, spinningState = false;
+        const alphabetBY = ['А','В','Е','І','К','М','Н','О','Р','С','Т','У','Х'];
+        const megaMenu = document.getElementById('megaMenu'), openMenuBtn = document.getElementById('openMenuBtn'), closeMenuBtn = document.getElementById('closeMenuBtn');
+        const spinBtn = document.getElementById('spinBtn'), walletDisplay = document.getElementById('walletDisplay'), priceDisplay = document.getElementById('priceDisplay'), rarityTitle = document.getElementById('rarityTitle'), dashesBox = document.getElementById('dashesBox'), multipliersDisplay = document.getElementById('multipliersDisplay'), numCenterBlock = document.getElementById('numCenterBlock'), regionBlock = document.getElementById('regionBlock'), plateCore = document.getElementById('plateCore');
         openMenuBtn.addEventListener('click', () => megaMenu.classList.add('active'));
         closeMenuBtn.addEventListener('click', () => megaMenu.classList.remove('active'));
-
+        document.getElementById('saveToGarageBtn').addEventListener('click', saveToLocalGarage);
         walletDisplay.innerText = balanceBYN + " BYN";
-        evaluateBetButton();
-
-        function evaluateBetButton() {
-            if(balanceBYN < currentBetCost) {
-                spinBtn.className = "spin-submit-btn disabled-state";
-                document.querySelector('#spinBtn span').innerText = "Не хватает на ставку";
-            } else {
-                spinBtn.className = "spin-submit-btn";
-                document.querySelector('#spinBtn span').innerText = "КРУТИТЬ СТАВКУ";
-            }
-        }
-
+        updateRarityDashes("#2563eb", 3);
+        renderMultipliers("Код 7 • Минск", "Минск — столичный регион ×1.3", "Три семёрки ×300");
+        function openShopTab() { megaMenu.classList.remove('active'); switchView('shop'); }
+        function switchView(tab) { document.querySelectorAll('.main-tab-view').forEach(el => el.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active')); document.getElementById('view-' + tab).classList.add('active'); document.getElementById('btn-tab-' + tab).classList.add('active'); }
+        function updateRarityDashes(color, count) { dashesBox.innerHTML = ""; for(let i=0; i<5; i++) { let d = document.createElement('div'); d.className = "dash-item"; if(i < count) d.style.background = color; dashesBox.appendChild(d); } }
+        function renderMultipliers(sub, m1, m2) { multipliersDisplay.innerHTML = `<div class="region-subinfo">${sub}</div><div class="multiplier-row">${m1}</div><div class="multiplier-row">${m2}</div>`; }
         function runGameSpin() {
-            if(balanceBYN < currentBetCost) {
-                balanceBYN += 2000; // Начисление денег для беспрерывной игры при клике
-                localStorage.setItem('b_cash_val', balanceBYN);
-                walletDisplay.innerText = balanceBYN + " BYN";
-                evaluateBetButton();
-                return;
-            }
-
-            if(spinningState) return;
-            spinningState = true;
-            plateCore.classList.add('shake-effect');
-
-            balanceBYN -= currentBetCost;
-            walletDisplay.innerText = balanceBYN + " BYN";
-            localStorage.setItem('b_cash_val', balanceBYN);
-
+            if(balanceBYN < currentBetCost) { balanceBYN += 2500; walletDisplay.innerText = balanceBYN + " BYN"; return; }
+            if(spinningState) return; spinningState = true; plateCore.classList.add('shake-effect');
+            balanceBYN -= currentBetCost; walletDisplay.innerText = balanceBYN + " BYN";
             let ticks = 0;
             const interval = setInterval(() => {
-                let n = Math.floor(1000 + Math.random() * 9000);
-                let l1 = alphabetBY[Math.floor(Math.random() * alphabetBY.length)];
-                let l2 = alphabetBY[Math.floor(Math.random() * alphabetBY.length)];
-                numCenterBlock.innerHTML = `${n}<span class="letter-pack">${l1}${l2}</span>`;
+                numCenterBlock.innerHTML = `${Math.floor(1000 + Math.random() * 9000)}<span class="letter-pack">${alphabetBY[Math.floor(Math.random() * alphabetBY.length)]}${alphabetBY[Math.floor(Math.random() * alphabetBY.length)]}</span>`;
                 regionBlock.innerText = `-${Math.floor(Math.random() * 7) + 1}`;
                 ticks++;
-
                 if(ticks > 12) {
-                    clearInterval(interval);
-                    plateCore.classList.remove('shake-effect');
-
-                    let finalNum = 7177;
-                    numCenterBlock.innerHTML = `${finalNum}<span class="letter-pack">КР</span>`;
-                    regionBlock.innerText = `-7`;
-
-                    balanceBYN += 725;
-                    localStorage.setItem('b_cash_val', balanceBYN);
-                    walletDisplay.innerText = balanceBYN + " BYN";
-
-                    evaluateBetButton();
-                    spinningState = false;
+                    clearInterval(interval); plateCore.classList.remove('shake-effect');
+                    let roll = Math.random(), finalNum=7177, fL1='К', fL2='Р', fReg=7, color="#2563eb", dots=3; lastRarityStr="Редкий"; lastPriceVal=725;
+                    if(roll < 0.20) { finalNum = 7777; fL1 = 'М'; fL2 = 'И'; lastRarityStr = "Легендарный"; color = "#e5b842"; dots = 5; lastPriceVal = 14250; renderMultipliers("Код 7 • Минск", "Минск — столичный регион ×1.3", "Четыре семерки ×950"); }
+                    else { renderMultipliers("Код 7 • Минск", "Минск — столичный регион ×1.3", "Три семёрки ×300"); }
+                    lastPlateStr = `${finalNum} ${fL1}${fL2}-${fReg}`;
+                    numCenterBlock.innerHTML = `${finalNum}<span class="letter-pack">${fL1}${fL2}</span>`;
+                    regionBlock.innerText = `-${fReg}`;
+                    balanceBYN += lastPriceVal; walletDisplay.innerText = balanceBYN + " BYN";
+                    priceDisplay.innerText = lastPriceVal + " BYN"; priceDisplay.style.color = color;
+                    rarityTitle.innerText = lastRarityStr; rarityTitle.style.color = color;
+                    updateRarityDashes(color, dots); localStorage.setItem('b_cash_val', balanceBYN); spinningState = false;
                 }
             }, 55);
         }
+        function saveToLocalGarage() { savedGarageList.unshift({ plate: lastPlateStr, rarity: lastRarityStr }); localStorage.setItem('b_saved_garage', JSON.stringify(savedGarageList)); alert("Сохранено: " + lastPlateStr); }
+        function showSavedGarage() { if(savedGarageList.length === 0) { alert("В коллекции пусто."); return; } let str = "Твой гараж:\n"; savedGarageList.forEach((item, i) => { str += (i+1) + ") " + item.plate + " [" + item.rarity + "]\n"; }); alert(str); }
         spinBtn.addEventListener('click', runGameSpin);
     </script>
 </body>
