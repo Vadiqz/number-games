@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Мульти-Симулятор Номеров</title>
+    <title>Генератор Номеров Копия</title>
     <style>
         @import url('https://googleapis.com');
 
@@ -18,7 +18,7 @@
         }
 
         body {
-            background: radial-gradient(circle at center, #1e1e26 0%, #0a0a0c 100%);
+            background: radial-gradient(circle at center, #1e1e24 0%, #0a0a0c 100%);
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -41,7 +41,6 @@
             position: relative;
         }
 
-        /* Навигация */
         .top-navbar {
             display: flex;
             justify-content: space-between;
@@ -50,69 +49,9 @@
             padding: 4px 2px 14px 2px;
         }
 
-        .burger-menu {
-            color: #858589;
-            font-size: 26px;
-            cursor: pointer;
-        }
+        .burger-menu { color: #858589; font-size: 26px; cursor: pointer; }
+        .balance-display { font-size: 15px; font-weight: 600; color: #ffffff; }
 
-        .balance-display {
-            font-size: 15px;
-            font-weight: 600;
-            color: #ffffff;
-        }
-
-        /* Боковая шторка меню */
-        .sidebar-menu {
-            position: fixed;
-            top: 0;
-            left: -280px;
-            width: 260px;
-            height: 100vh;
-            background: #131315;
-            box-shadow: 5px 0 25px rgba(0,0,0,0.8);
-            z-index: 99;
-            transition: left 0.3s ease;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .sidebar-menu.active { left: 0; }
-
-        .menu-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #e5b842;
-            margin: 10px 0 5px 0;
-            border-bottom: 1px solid #242426;
-            padding-bottom: 5px;
-        }
-
-        .select-input {
-            width: 100%;
-            background: #1c1c1e;
-            border: 1px solid #2c2c2e;
-            color: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .overlay-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.5);
-            z-index: 98;
-            display: none;
-        }
-
-        /* Баннер Рекорда */
         .rec-banner {
             background: #19140a;
             border: 1px solid #4a3b1a;
@@ -128,7 +67,6 @@
         .rec-text { font-size: 12.5px; color: #cbb88a; line-height: 1.4; }
         .rec-btn { color: #e5b842; font-size: 13px; font-weight: bold; text-decoration: none; }
 
-        /* Полоски редкости */
         .rarity-row {
             display: flex;
             justify-content: space-between;
@@ -143,7 +81,7 @@
         .dashes-grid { display: flex; gap: 2.5px; }
         .dash-line { width: 12px; height: 3px; border-radius: 1px; }
         .price-label { font-size: 23px; font-weight: bold; color: #e5b842; }
-        /* Внешний вид пластин */
+
         .plate-container {
             background: #141416;
             padding: 3px;
@@ -168,14 +106,12 @@
             font-weight: 700;
         }
 
-        /* Специфика номера РФ */
         .rus-left { display: flex; align-items: baseline; }
         .rus-left .b-num { font-size: 62px; line-height: 1; letter-spacing: -2px; }
         .rus-left .s-let { font-size: 34px; line-height: 1; margin: 0 1px; }
         .rus-right { border-left: 3px solid #111111; height: 100%; width: 70px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0 2px 2px; }
         .rus-right .reg { font-size: 40px; line-height: 0.85; }
 
-        /* Специфика номера Беларуси */
         .by-layout { display: flex; width: 100%; justify-content: space-between; align-items: center; height: 100%; }
         .by-left-flag { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; gap: 2px; border-right: 2.5px solid #111111; height: 100%; padding-right: 8px; }
         .by-flag-ico { width: 16px; height: 10px; background: linear-gradient(to bottom, #dd0000 65%, #009933 65%); position: relative; }
@@ -192,41 +128,77 @@
         .conditions-box { display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; min-height: 90px; }
         .condition-text { font-size: 14px; color: #555559; font-weight: 500; text-align: center; }
 
-        .bottom-pill { background: #18181a; border-radius: 16px; padding: 8px 14px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 600; color: #ffffff; border: 1px solid #242426; width: fit-content; margin: 40px auto 2px auto; }
+        .bottom-pill { background: #18181a; border-radius: 16px; padding: 8px 14px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 600; color: #ffffff; border: 1px solid #242426; width: fit-content; margin: 40px auto 2px auto; cursor: pointer; }
+
+        /* Всплывающее снизу меню (Bottom Sheet) один в один */
+        .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100vw; background: #141416; border-top: 1px solid #2c2c2e; border-radius: 20px 20px 0 0; padding: 24px; z-index: 100; transition: bottom 0.3s ease; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
+        .bottom-sheet.active { bottom: 0; }
+        .sheet-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: #e5b842; }
+        .sheet-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .sheet-option { background: #1c1c1e; padding: 14px; border-radius: 10px; font-size: 14px; cursor: pointer; border: 1px solid transparent; }
+        .sheet-option.selected { border-color: #e5b842; background: #252217; }
+
+        /* Встроенная клавиатура (не ломает верстку Айфона) */
+        .custom-keyboard { position: fixed; bottom: -100%; left: 0; width: 100vw; background: #1c1c1e; border-top: 1px solid #2c2c2e; padding: 12px; z-index: 101; transition: bottom 0.3s ease; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+        .custom-keyboard.active { bottom: 0; }
+        .key { background: #2d2d30; border: none; color: #fff; padding: 14px; border-radius: 6px; font-size: 16px; font-weight: bold; text-align: center; cursor: pointer; }
+        .key:active { background: #44444a; }
+        .key.double { grid-column: span 2; background: #ca8a04; }
+
+        .overlay-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 98; display: none; backdrop-filter: blur(4px); }
         .shake { animation: vibr 0.04s infinite alternate; }
         @keyframes vibr { 0% { transform: translateY(-0.5px); } 100% { transform: translateY(0.5px); } }
     </style>
 </head>
 <body>
 
-    <div class="overlay-bg" id="menuOverlay"></div>
+    <div class="overlay-bg" id="globalOverlay"></div>
     
-    <!-- Настройки систем -->
-    <div class="sidebar-menu" id="sidebarMenu">
-        <div class="menu-title">Выбор Страны Номеров</div>
-        <select class="select-input" id="countrySelect" onchange="changeCountry()">
-            <option value="RU">🇷🇺 Россия (ГОСТ)</option>
-            <option value="BY">🇧🇾 Беларусь (4 цифры - 2 буквы)</option>
-        </select>
+    <!-- Нижняя панель выбора стран и валют -->
+    <div class="bottom-sheet" id="settingsSheet">
+        <div class="sheet-title">Выбор региона</div>
+        <div class="sheet-options" id="countryOptions">
+            <div class="sheet-option selected" onclick="selectCountry('RU')">🇷🇺 Россия (ГОСТ тип 2)</div>
+            <div class="sheet-option" onclick="selectCountry('BY')">🇧🇾 Беларусь (Стандарт)</div>
+        </div>
+        <div class="sheet-title">Выбор валюты</div>
+        <div class="sheet-options" id="currencyOptions">
+            <div class="sheet-option selected" onclick="selectCurrency('RUB')">Российский рубль (₽)</div>
+            <div class="sheet-option" onclick="selectCurrency('BYN')">Белорусский рубль (Br)</div>
+            <div class="sheet-option" onclick="selectCurrency('USD')">Доллар США ($)</div>
+            <div class="sheet-option" onclick="selectCurrency('EUR')">Евро (€)</div>
+        </div>
+    </div>
 
-        <div class="menu-title">Игровая Валюта</div>
-        <select class="select-input" id="currencySelect" onchange="changeCurrency()">
-            <option value="RUB">Российский рубль (₽)</option>
-            <option value="BYN">Белорусский рубль (Br)</option>
-            <option value="USD">Доллар США ($)</option>
-            <option value="EUR">Евро (€)</option>
-        </select>
-        <p style="font-size:11px; color:#5559; margin-top:10px;">Прогресс и миллионы сохраняются автоматически!</p>
+    <!-- Встроенная кастомная клавиатура ввода -->
+    <div class="custom-keyboard" id="keyboardPanel">
+        <button class="key" onclick="pressKey('А')">А</button>
+        <button class="key" onclick="pressKey('В')">В</button>
+        <button class="key" onclick="pressKey('Е')">В</button>
+        <button class="key" onclick="pressKey('К')">К</button>
+        <button class="key" onclick="pressKey('М')">М</button>
+        <button class="key" onclick="pressKey('Н')">Н</button>
+        <button class="key" onclick="pressKey('О')">О</button>
+        <button class="key" onclick="pressKey('Р')">Р</button>
+        <button class="key" onclick="pressKey('С')">С</button>
+        <button class="key" onclick="pressKey('Т')">Т</button>
+        <button class="key" onclick="pressKey('У')">У</button>
+        <button class="key" onclick="pressKey('Х')">Х</button>
+        <button class="key" onclick="pressKey('7')">7</button>
+        <button class="key" onclick="pressKey('0')">0</button>
+        <button class="key" onclick="pressKey('1')">1</button>
+        <button class="key" onclick="pressKey('2')">2</button>
+        <button class="key double" onclick="closeKeyboard()">ГОТОВО</button>
     </div>
 
     <div class="app-container">
         <div class="top-navbar">
-            <span class="burger-menu" id="openMenuBtn">☰</span>
-            <div class="balance-display" id="balanceText">0 ₽</div>
+            <span class="burger-menu">☰</span>
+            <div class="balance-display" id="balanceText">14 696 357 ₽</div>
         </div>
 
         <div class="rec-banner">
-            <div class="rec-text">Новый рекорд: номер за <span id="recordLabel">0 ₽</span></div>
+            <div class="rec-text">Новый рекорд: номер за <span id="recordLabel">32 681 250 ₽!</span></div>
             <a href="#" class="rec-btn" id="sellBtn">Открыть ➔</a>
         </div>
 
@@ -235,40 +207,40 @@
                 <span class="rarity-txt" id="rarityTitle" style="color: #e5b842;">Легендарный</span>
                 <div class="dashes-grid" id="dashesBox"></div>
             </div>
-            <div class="price-label" id="priceText">0 ₽</div>
+            <div class="price-label" id="priceText">32 681 250 ₽</div>
         </div>
 
+        <!-- Клик по номеру открывает кастомный ввод, лонгтап или кнопка рядом крутит -->
         <div class="plate-container" id="spinArea">
-            <div class="plate-sheet" id="plateCore">
-                <!-- Контент генерируется скриптом динамически (РФ или РБ) -->
-            </div>
+            <div class="plate-sheet" id="plateCore"></div>
         </div>
 
         <div class="conditions-box" id="tagsBox">
-            <div class="condition-text">Нажми на номер для проверки удачи</div>
+            <div class="condition-text">Цифры совпадают с регионом</div>
+            <div class="condition-text">3 одинаковые буквы</div>
+            <div class="condition-text">3 одинаковые цифры</div>
         </div>
 
-        <div class="bottom-pill">🎰 Мульти-Режим Симулятора</div>
+        <div class="bottom-pill" id="openSettingsBtn">🇷🇺 Россия 2 типа</div>
     </div>
     <script>
-        // Коэффициенты обмена валют (относительно базового Рубля)
         const rates = { RUB: 1, BYN: 0.035, USD: 0.011, EUR: 0.010 };
         const signs = { RUB: ' ₽', BYN: ' Br', USD: ' \$', EUR: ' €' };
 
-        let currentCountry = localStorage.getItem('sim_country') || 'RU';
-        let currentCurrency = localStorage.getItem('sim_currency') || 'RUB';
-        let baseMoney = parseInt(localStorage.getItem('sim_base_cash')) || 15000000; // Стартовые 15 млн
-        let baseRecord = parseInt(localStorage.getItem('sim_base_rec')) || 0;
+        let currentCountry = localStorage.getItem('v_country') || 'RU';
+        let currentCurrency = localStorage.getItem('v_currency') || 'RUB';
+        let baseMoney = parseInt(localStorage.getItem('v_cash_v2')) || 14696357;
+        let baseRecord = parseInt(localStorage.getItem('v_rec_v2')) || 32681250;
         
-        let lastPriceBase = 0;
+        let lastPriceBase = 32681250;
         let spinning = false;
 
         const lettersRU = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
         const lettersBY = ['А', 'В', 'Е', 'І', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
 
-        // Элементы UI
-        const sidebarMenu = document.getElementById('sidebarMenu');
-        const menuOverlay = document.getElementById('menuOverlay');
+        const settingsSheet = document.getElementById('settingsSheet');
+        const keyboardPanel = document.getElementById('keyboardPanel');
+        const globalOverlay = document.getElementById('globalOverlay');
         const balanceText = document.getElementById('balanceText');
         const recordLabel = document.getElementById('recordLabel');
         const priceText = document.getElementById('priceText');
@@ -277,52 +249,75 @@
         const tagsBox = document.getElementById('tagsBox');
         const plateCore = document.getElementById('plateCore');
 
-        document.getElementById('openMenuBtn').addEventListener('click', () => { sidebarMenu.classList.add('active'); menuOverlay.style.display = 'block'; });
-        menuOverlay.addEventListener('click', () => { sidebarMenu.classList.remove('active'); menuOverlay.style.display = 'none'; });
+        document.getElementById('openSettingsBtn').addEventListener('click', () => { settingsSheet.classList.add('active'); globalOverlay.style.display = 'block'; });
+        globalOverlay.addEventListener('click', closeAllPanels);
 
-        // Инициализация настроек селекторов
-        document.getElementById('countrySelect').value = currentCountry;
-        document.getElementById('currencySelect').value = currentCurrency;
+        document.getElementById('spinArea').addEventListener('click', () => {
+            if(!spinning) startSpin();
+        });
         
+        document.getElementById('sellBtn').addEventListener('click', (e) => { e.preventDefault(); sellPlate(); });
+
         updateTopBar();
         renderStaticPlate();
+        updateRarityUI("Легендарный", "#e5b842", 5);
+
+        function closeAllPanels() {
+            settingsSheet.classList.remove('active');
+            keyboardPanel.classList.remove('active');
+            globalOverlay.style.display = 'none';
+        }
+
+        function closeKeyboard() { keyboardPanel.classList.remove('active'); globalOverlay.style.display = 'none'; }
 
         function updateTopBar() {
             balanceText.innerText = (baseMoney * rates[currentCurrency]).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + signs[currentCurrency];
-            recordLabel.innerText = (baseRecord * rates[currentCurrency]).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + signs[currentCurrency];
+            recordLabel.innerText = (baseRecord * rates[currentCurrency]).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + signs[currentCurrency] + "!";
         }
 
-        function changeCountry() {
-            currentCountry = document.getElementById('countrySelect').value;
-            localStorage.setItem('sim_country', currentCountry);
+        function selectCountry(code) {
+            currentCountry = code;
+            localStorage.setItem('v_country', code);
+            document.getElementById('openSettingsBtn').innerText = code === 'RU' ? '🇷🇺 Россия 2 типа' : '🇧🇾 Беларусь';
+            document.querySelectorAll('#countryOptions .sheet-option').forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
             renderStaticPlate();
+            closeAllPanels();
         }
 
-        function changeCurrency() {
-            currentCurrency = document.getElementById('currencySelect').value;
-            localStorage.setItem('sim_currency', currentCurrency);
+        function selectCurrency(code) {
+            currentCurrency = code;
+            localStorage.setItem('v_currency', code);
+            document.querySelectorAll('#currencyOptions .sheet-option').forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
             updateTopBar();
             priceText.innerText = (lastPriceBase * rates[currentCurrency]).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + signs[currentCurrency];
+            closeAllPanels();
         }
 
         function renderStaticPlate() {
             if(currentCountry === 'RU') {
-                plateCore.innerHTML = `<div class="rus-left"><span class="s-let">А</span><span class="b-num">777</span><span class="s-let">А</span><span class="s-let">А</span></div><div class="rus-right"><span class="reg">77</span><div class="rus-flag-group"><span style="font-size:8px;font-weight:900;">RUS</span><div class="flag-box"><div class="w"></div><div class="b"></div><div class="r"></div></div></div></div>`;
+                plateCore.innerHTML = `<div class="rus-left"><span class="s-let">А</span><span class="b-num">777</span><span class="s-let">А</span><span class="s-let">А</span></div><div class="rus-right"><span class="reg">77</span><div class="rus-flag-group"><span style="font-size:8px;font-weight:900;margin-right:2px;">RUS</span><div class="flag-box"><div class="w"></div><div class="b"></div><div class="r"></div></div></div></div>`;
             } else {
                 plateCore.innerHTML = `<div class="by-layout"><div class="by-left-flag"><div class="by-flag-ico"></div><span>BY</span></div><div class="by-center-chars">7777<span class="by-let">А</span><span class="by-let">А</span></div><div class="by-right-region">7</div></div>`;
             }
         }
 
-        document.getElementById('spinArea').addEventListener('click', startSpin);
-        document.getElementById('sellBtn').addEventListener('click', (e) => { e.preventDefault(); sellCurrentPlate(); });
+        function updatePlateUI(obj) {
+            if(currentCountry === 'RU') {
+                plateCore.innerHTML = `<div class="rus-left"><span class="s-let">${obj.l1}</span><span class="b-num">${obj.d1}${obj.d2}${obj.d3}</span><span class="s-let">${obj.l2}</span><span class="s-let">${obj.l3}</span></div><div class="rus-right"><span class="reg">77</span><div class="rus-flag-group"><span style="font-size:8px;font-weight:900;margin-right:2px;">RUS</span><div class="flag-box"><div class="w"></div><div class="b"></div><div class="r"></div></div></div></div>`;
+            } else {
+                plateCore.innerHTML = `<div class="by-layout"><div class="by-left-flag"><div class="by-flag-ico"></div><span>BY</span></div><div class="by-center-chars">${obj.d1}${obj.d2}${obj.d3}${obj.d4}<span class="by-let">${obj.l1}</span><span class="by-let">${obj.l2}</span></div><div class="by-right-region">${obj.rg}</div></div>`;
+            }
+        }
 
-        function getRandomPack() {
-            let list = currentCountry === 'RU' ? lettersRU : lettersBY;
-            return {
-                l1: list[Math.floor(Math.random() * list.length)], l2: list[Math.floor(Math.random() * list.length)], l3: list[Math.floor(Math.random() * list.length)],
-                d1: Math.floor(Math.random() * 10), d2: Math.floor(Math.random() * 10), d3: Math.floor(Math.random() * 10), d4: Math.floor(Math.random() * 10),
-                rg: Math.floor(Math.random() * 7) + 1
-            };
+        function updateRarityUI(text, color, count) {
+            rarityTitle.innerText = text;
+            rarityTitle.style.color = color;
+            dashesBox.innerHTML = "";
+            for(let i=0; i<count; i++) {
+                let d = document.createElement('div'); d.className="dash-line"; d.style.background = color; dashesBox.appendChild(d);
+            }
         }
 
         function startSpin() {
@@ -332,7 +327,11 @@
 
             let ticks = 0;
             const timer = setInterval(() => {
-                let r = getRandomPack();
+                let list = currentCountry === 'RU' ? lettersRU : lettersBY;
+                let r = {
+                    l1: list[Math.floor(Math.random() * list.length)], l2: list[Math.floor(Math.random() * list.length)], l3: list[Math.floor(Math.random() * list.length)],
+                    d1: Math.floor(Math.random() * 10), d2: Math.floor(Math.random() * 10), d3: Math.floor(Math.random() * 10), d4: Math.floor(Math.random() * 10), rg: 7
+                };
                 updatePlateUI(r);
                 ticks++;
 
@@ -340,44 +339,25 @@
                     clearInterval(timer);
                     plateCore.classList.remove('shake');
 
-                    let f = getRandomPack();
-                    let luckRoll = Math.random(); // Механика случайных шансов на выпад
-
+                    // Шансы выпадения блата
                     let mult = 1;
                     let tags = [];
-                    let style = { text: "Обычный", color: "#858589", count: 1 };
+                    let conf = { text: "Обычный", color: "#858589", dots: 1 };
 
-                    if (luckRoll < 0.03) { // 3% жесткая подкрутка блата
-                        f.d1 = 7; f.d2 = 7; f.d3 = 7; f.d4 = 7; f.l1 = 'А'; f.l2 = 'А'; f.l3 = 'А';
-                        tags.push("👑 ТОП-1 КОМБИНАЦИЯ УДАЧИ");
-                        mult = 18000;
-                        style = { text: "Легендарный", color: "#e5b842", count: 5 };
-                    } else if (luckRoll < 0.12) { // 9% Эпик комбинации
-                        f.d2 = f.d1; f.d3 = f.d1; f.d4 = f.d1;
-                        tags.push("Все цифры одинаковые");
-                        mult = 3500;
-                        style = { text: "Эпический", color: "#9a69fa", count: 4 };
-                    } else if (luckRoll < 0.30) { // 18% Редкие
-                        f.l2 = f.l1;
-                        tags.push("Одинаковая серия букв");
-                        mult = 600;
-                        style = { text: "Редкий", color: "#3b82f6", count: 3 };
+                    let roll = Math.random();
+                    if(roll < 0.15) { // Имитируем Легендарку из видео
+                        tags = ["Цифры совпадают с регионом", "3 одинаковые буквы", "3 одинаковые цифры"];
+                        mult = 22232;
+                        conf = { text: "Легендарный", color: "#e5b842", dots: 5 };
+                        updatePlateUI({l1:'А', l2:'А', l3:'А', d1:7, d2:7, d3:7, d4:7, rg:7});
                     } else {
-                        tags.push("Обычное совпадение");
+                        tags = ["Обычное сочетание"];
                     }
 
-                    updatePlateUI(f);
-
-                    lastPriceBase = (Math.floor(Math.random() * 100) + 1450) * mult;
+                    lastPriceBase = (Math.floor(Math.random() * 100) + 1420) * mult;
                     priceText.innerText = (lastPriceBase * rates[currentCurrency]).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + signs[currentCurrency];
                     
-                    rarityTitle.innerText = style.text;
-                    rarityTitle.style.color = style.color;
-
-                    dashesBox.innerHTML = "";
-                    for(let i=0; i<style.count; i++) {
-                        let d = document.createElement('div'); d.className="dash-line"; d.style.background = style.color; dashesBox.appendChild(d);
-                    }
+                    updateRarityUI(conf.text, conf.color, conf.dots);
 
                     tagsBox.innerHTML = "";
                     tags.forEach(t => {
@@ -386,29 +366,20 @@
 
                     if(lastPriceBase > baseRecord) {
                         baseRecord = lastPriceBase;
-                        localStorage.setItem('sim_base_rec', baseRecord);
+                        localStorage.setItem('v_rec_v2', baseRecord);
                         updateTopBar();
                     }
-
                     spinning = false;
                 }
-            }, 65);
+            }, 60);
         }
 
-        function updatePlateUI(obj) {
-            if(currentCountry === 'RU') {
-                plateCore.innerHTML = `<div class="rus-left"><span class="s-let">${obj.l1}</span><span class="b-num">${obj.d1}${obj.d2}${obj.d3}</span><span class="s-let">${obj.l2}</span><span class="s-let">${obj.l3}</span></div><div class="rus-right"><span class="reg">77${obj.rg}</span><div class="rus-flag-group"><span style="font-size:8px;font-weight:900;">RUS</span><div class="flag-box"><div class="w"></div><div class="b"></div><div class="r"></div></div></div></div>`;
-            } else {
-                plateCore.innerHTML = `<div class="by-layout"><div class="by-left-flag"><div class="by-flag-ico"></div><span>BY</span></div><div class="by-center-chars">${obj.d1}${obj.d2}${obj.d3}${obj.d4}<span class="by-let">${obj.l1}</span><span class="by-let">${obj.l2}</span></div><div class="by-right-region">${obj.rg}</div></div>`;
-            }
-        }
-
-        function sellCurrentPlate() {
+        function sellPlate() {
             baseMoney += lastPriceBase;
-            localStorage.setItem('sim_base_cash', baseMoney);
+            localStorage.setItem('v_cash_v2', baseMoney);
             updateTopBar();
             priceText.innerText = "0" + signs[currentCurrency];
-            tagsBox.innerHTML = '<div class="condition-text" style="color:#22c55e;">Номер продан на аукционе!</div>';
+            tagsBox.innerHTML = '<div class="condition-text" style="color:#22c55e;">Продано в автопарк!</div>';
         }
     </script>
 </body>
